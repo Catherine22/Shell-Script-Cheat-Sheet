@@ -96,3 +96,60 @@ $./test1_demo.sh
 > ..: parent directory
 
 You can simply run the file by `./test1_demo.sh`, or you can even go from parent directory like `../localusers/test1_demo.sh`
+
+#### Shell builtin
+
+To see if a command is a shell builtin, type
+
+```sh
+$type [COMMAND]
+```
+
+For example, you can try `$help echo`, and you will get `echo is a shell builtin`
+
+You can get documentation of any shell builtin by typing
+
+```sh
+$help [SHELL_BUILTIN]
+```
+
+To show in another page
+
+```sh
+$help [SHELL_BUILTIN]|less
+```
+
+E.g. `$help echo`
+
+
+## Shell Script
+
+### echo
+
+```bash
+#!/bin/bash
+
+# Print 'Hello world'
+echo 'Hello World'
+
+# Assign a value to a variable (NO BLANKS before the value)
+NAME='Catherine'
+
+# Print the variable (You MUST use double quotes)
+echo "$NAME"
+
+# Print a sentence contained a variable
+echo "Hello, there! I'm $NAME."
+
+# Combine variables
+LINE1='England is barely big enough to contain her. '
+LINE2='She will travel Paris, Italy, the Pyrenees. She was mentioning Russia.'
+
+echo "${LINE1}${LINE2}"
+
+# Reassignment
+LINE1='Will she be staying long? '
+LINE2='Oh, I doubt it.'
+
+echo "${LINE1}${LINE2}"
+```
