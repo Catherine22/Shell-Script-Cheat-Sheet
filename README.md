@@ -121,10 +121,9 @@ $help [SHELL_BUILTIN]|less
 
 E.g. `$help echo`
 
-
-## Shell Script
-
 ### echo
+
+To print something such as variables on the terminal.
 
 ```bash
 #!/bin/bash
@@ -152,4 +151,13 @@ LINE1='Will she be staying long? '
 LINE2='Oh, I doubt it.'
 
 echo "${LINE1}${LINE2}"
+```
+
+```
+┌──────┐
+| Tips |
+├──────┴─────────────────────────────────────────────────┐
+|1. No blanks                                            |
+|2. Single quotes for value, double quotes for variable  |
+└────────────────────────────────────────────────────────┘
 ```
