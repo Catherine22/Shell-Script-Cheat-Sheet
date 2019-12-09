@@ -9,13 +9,13 @@
 
 -   Download a box(OS image) and store it to your local storage , e.g.
 
-```sh
+```shell
 $vagrant box add username/os_name
 ```
 
 -   Initialise a vagrant project and import the box into VirtualBox:
 
-```sh
+```shell
 $vagrant init username/os_name
 $vagrant up
 ```
@@ -29,13 +29,13 @@ $vagrant up
 
 1. Run the box (with the username test1 for example)
 
-```sh
+```shell
 $vagrant up test1
 ```
 
 2. SSH into the machine
 
-```sh
+```shell
 $vagrant ssh test1
 ```
 
@@ -47,7 +47,7 @@ And you will see something like this `[vagrant@testbox01 ~]$`.
 
 1. Put shebang in the first line
 
-```sh
+```shell
 #!/bin/bash
 ```
 
@@ -57,14 +57,14 @@ When you write shebang, i.e. "#!", it specifies which interpreter this script is
 
 1. Check access permission at first
 
-```sh
+```shell
 $ls -l
 ```
 
 And you will see the permission
 
-```sh
--rw-r--r-- 1 vagrant vagrant   32 Dec  3 08:19 test1_demo.sh
+```shell
+-rw-r--r-- 1 vagrant vagrant   32 Dec  3 08:19 test1_echo.sh
 ```
 
 Ignore the first `-`, we have three characters a group, the first `rw-` is the permission of the owner of the file means the readable, writeable but non-executable. The next set `r--` represents the permission of the group of the file, the last `r--` represents the permission that everyone else in this system granted.
@@ -72,8 +72,8 @@ Ignore the first `-`, we have three characters a group, the first `rw-` is the p
 2. Execute the file and you will get _Permission denied_ error
 3. Grant the permission to execute the file
 
-```sh
-$chmod 755 test1_demo.sh
+```shell
+$chmod 755 test1_echo.sh
 ```
 
 > r=4, w=2, x=1
@@ -81,27 +81,27 @@ $chmod 755 test1_demo.sh
 
 Type `ls -l` again, and you'll see:
 
-```sh
--rwxr-xr-x 1 vagrant vagrant   32 Dec  3 08:19 test1_demo.sh
+```shell
+-rwxr-xr-x 1 vagrant vagrant   32 Dec  3 08:19 test1_echo.sh
 ```
 
 4. Execute the script
 
-```sh
-$./test1_demo.sh
+```shell
+$./test1_echo.sh
 ```
 
 > .: this directory
 > /: separate the file and `.`
 > ..: parent directory
 
-You can simply run the file by `./test1_demo.sh`, or you can even go from parent directory like `../localusers/test1_demo.sh`
+You can simply run the file by `./test1_echo.sh`, or you can even go from parent directory like `../localusers/test1_echo.sh`
 
 #### Shell builtin
 
 To see if a command is a shell builtin, type
 
-```sh
+```shell
 $type [COMMAND]
 ```
 
@@ -109,13 +109,13 @@ For example, you can try `$help echo`, and you will get `echo is a shell builtin
 
 You can get documentation of any shell builtin by typing
 
-```sh
+```shell
 $help [SHELL_BUILTIN]
 ```
 
 To show in another page
 
-```sh
+```shell
 $help [SHELL_BUILTIN]|less
 ```
 
@@ -161,3 +161,27 @@ echo "${LINE1}${LINE2}"
 |2. Single quotes for value, double quotes for variable  |
 └────────────────────────────────────────────────────────┘
 ```
+
+### Special variables
+
+1. UID/EUID
+
+```shell
+$echo "Your UID is ${UID} and EUID is ${EUID}"
+```
+
+2. id(uid, gid and group)
+
+```shell
+$id
+```
+
+You will see `uid=1000(vagrant) gid=1000(vagrant) groups=1000(vagrant)` in Vagrant machine, and you will see more information on Mac by the way ([link](https://apple.stackexchange.com/questions/113822/what-are-com-apple-access-ssh-and-com-apple-access-screensharing-can-i-dele)).
+
+To print one piece of information e.g. name of gid, type:
+
+```shell
+$id -g -n
+```
+
+> They're different when a program is running set-uid. Effective UID is the user you changed to, UID is the original user. (Which means **UID IS READ ONLY**)
