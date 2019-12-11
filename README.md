@@ -32,7 +32,7 @@ catherine@Vincent-2 ~ $
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
-export PS1="\u@\h \W\[\033[35m\]\$(parse_git_branch)\[\033[00m\] $ "
+export PS1="\u@\h \W\[\033[31m\]\$(parse_git_branch)\[\033[00m\] $ "
 ```
 
 -   Set vim colour in ~/.vimrc:
