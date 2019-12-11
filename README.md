@@ -12,6 +12,56 @@
 
 1. Install virtualBox and [vagrant](https://www.vagrantup.com/) to automate the process of creating a virtual machine.
 2. Take a look at [vagrant cloud](https://app.vagrantup.com/boxes/search) to see what public vagrant boxes are available
+3. (Optional) Customise Your terminal and vim
+
+-   Zoom the font size of your terminal:
+    Terminal -> Preferences -> Switch to `text` tab -> Font
+-   Set terminal colour in ~/.bash_profile:
+
+```
+# Global terminal colours
+export CLICOLOR=1
+export LSCOLORS=GxFxCxDxBxegedabagacedH
+catherine@Vincent-2 ~ $
+```
+
+-   Show git branch on terminal in ~/.bash_profile:
+
+```
+# Git branch in prompt.
+parse_git_branch() {
+  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+export PS1="\u@\h \W\[\033[35m\]\$(parse_git_branch)\[\033[00m\] $ "
+```
+
+-   Set vim colour in ~/.vimrc:
+
+```
+syntax on
+
+colorscheme desert
+```
+
+-   Display line numbers in vim:
+
+Vim any file
+
+```shell
+$vim ANY_FILE
+```
+
+Type `:set nu` and enter
+
+4. Useful shortcuts
+
+    - terminal
+        - Search command history: `ctrl` + `R`, next: `R`
+    - vim
+        - Jump to line 14: `:14`
+        - Scroll to top: `gg` or `:1`
+        - Reach the end of a file: `shift` + `g`
+        - Search: `/` or `?`
 
 ### Useful vagrant commands
 
