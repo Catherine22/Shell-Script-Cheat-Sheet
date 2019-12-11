@@ -1,5 +1,13 @@
 # Linux-tutorial
 
+-   [Prerequisites](https://github.com/Catherine22/Linux-tutorial#prerequisites)
+    -   [Useful vagrant commands](https://github.com/Catherine22/Linux-tutorial#useful-vagrant-commands)
+-   [Shell script](https://github.com/Catherine22/Linux-tutorial#shell-script)
+    -   [Commands](https://github.com/Catherine22/Linux-tutorial#commands)
+    -   [Permission](https://github.com/Catherine22/Linux-tutorial#permission)
+    -   [echo](https://github.com/Catherine22/Linux-tutorial#echo)
+    -   [Special variables](https://github.com/Catherine22/Linux-tutorial#special-variables)
+
 ## Prerequisites
 
 1. Install virtualBox and [vagrant](https://www.vagrantup.com/) to automate the process of creating a virtual machine.
@@ -23,7 +31,7 @@ $vagrant up
 [Exercise](https://www.udemy.com/course/linux-shell-scripting-projects/learn/lecture/7980558#overview)
 
 -   You can create a box with your very own Vagrantfile, which contains a serial of steps of creating a machine. (Think of it a script defines commands of VirtualBox to create a virtual machine)
--   [Vagrant file example](https://github.com/Catherine22/Linux-tutorial/blob/master/Vagrantfile)
+-   [Vagrant file example](https://github.com/Catherine22/Linux-tutorial/Vagrantfile)
 
 -   Once you have the machine created, what you do the most might be to start the machine and SSH into the machine.
 
@@ -52,6 +60,20 @@ And you will see something like this `[vagrant@testbox01 ~]$`.
 ```
 
 When you write shebang, i.e. "#!", it specifies which interpreter this script is going to use.
+
+2. To see what a command actually is, check its type at first.
+
+E.g. to see what `whoami` can do
+
+```shell
+$type a whoami
+```
+
+And you will get `whoami is /usr/bin/whoami`. It is a program, so we can open its manual by typing `man
+
+```shell
+$man whoami
+```
 
 ### Permission
 
@@ -184,4 +206,22 @@ To print one piece of information e.g. name of gid, type:
 $id -g -n
 ```
 
+These options can be merged. E.g. `$id -gn`
+
 > They're different when a program is running set-uid. Effective UID is the user you changed to, UID is the original user. (Which means **UID IS READ ONLY**)
+
+3. username
+
+```shell
+USERNAME=$(id -un) # or `id -un` or $(whoami) or `whoami`
+echo "Your username: ${USERNAME}"
+```
+
+```
+┌──────┐
+| Tips |
+├──────┴─────────────────────────────────────────────────────────────────┐
+|1. Define a code snippet with `$(YOUR_COMMAND)` or `` `YOUR_COMMAND` `` |
+|2. Single quotes for value, double quotes for variable                  |
+└────────────────────────────────────────────────────────────────────────┘
+```

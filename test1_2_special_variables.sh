@@ -4,7 +4,10 @@
 # UID 1000 is for vagrant
 echo "Your UID is ${UID} and EUID is ${EUID}"
 
-# id includes (uid, gid and group)
+# id includes (uid, gid and groups)
 id
 
+# User's info
+USERNAME=$(id -un) # or `id -un`
+echo "Your username: ${USERNAME}"
 
