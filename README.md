@@ -113,16 +113,47 @@ When you write shebang, i.e. "#!", it specifies which interpreter this script is
 
 2. To see what a command actually is, check its type at first.
 
-E.g. to see what `whoami` can do
+Example 1, a program
 
 ```shell
-$type a whoami
+$type -a whoami
 ```
 
-And you will get `whoami is /usr/bin/whoami`. It is a program, so we can open its manual by typing `man
+And you will get `whoami is /usr/bin/whoami`. It is a program, so we can open its manual by typing `man`
 
 ```shell
 $man whoami
+```
+
+Example 2, a shell keyword
+
+```shell
+$type -a if
+```
+
+It turns out `if is a shell keyword`. So now you can learn the keyword by typing `help`
+
+```shell
+$help if
+```
+
+Example 3, a shell builtin
+
+```shell
+$type -a test
+```
+
+It turns out:
+
+```
+test is a shell builtin
+test is /usr/bin/test
+```
+
+Show the manual by typing `help`, you can also add `| less` to get it more readable.
+
+```shell
+$help test | less
 ```
 
 ### Permission
@@ -227,7 +258,7 @@ echo "${LINE1}${LINE2}"
 
 ```
 ┌──────┐
-| Tips |
+| echo |
 ├──────┴─────────────────────────────────────────────────┐
 |1. No blanks                                            |
 |2. Single quotes for value, double quotes for variable  |
@@ -267,11 +298,48 @@ USERNAME=$(id -un) # or `id -un` or $(whoami) or `whoami`
 echo "Your username: ${USERNAME}"
 ```
 
+4. Check if it is root
+
+```shell
+if [[ "${UID}" -eq 0 ]]
+then
+  echo 'You are root'
+else
+  echo 'You are not root'
+fi
 ```
-┌──────┐
-| Tips |
-├──────┴─────────────────────────────────────────────────────────────────┐
+
+```
+┌───────────┐
+| Variables |
+├───────────┴────────────────────────────────────────────────────────────┐
 |1. Define a code snippet with `$(YOUR_COMMAND)` or `` `YOUR_COMMAND` `` |
 |2. Single quotes for value, double quotes for variable                  |
 └────────────────────────────────────────────────────────────────────────┘
+```
+
+### If statement
+
+Rule 1
+
+```shell
+if [[ xxx -eq xxx ]]
+  then # do something
+fi;
+```
+
+E.g.
+
+Write in one single line and separate each command by `;`
+
+```shell
+$if [[ 'a' -eq 'a' ]]; then echo 'same'; fi;
+```
+
+To be readable, you can truncate commands by pressing `shift` + `enter`. No `;` anymore.
+
+```shell
+$if [[ 'a' -eq 'a' ]]
+>  then echo 'same'
+>fi
 ```
