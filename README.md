@@ -22,7 +22,6 @@
 # Global terminal colours
 export CLICOLOR=1
 export LSCOLORS=GxFxCxDxBxegedabagacedH
-catherine@Vincent-2 ~ $
 ```
 
 -   Show git branch on terminal in ~/.bash_profile:
