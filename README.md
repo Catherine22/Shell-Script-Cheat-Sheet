@@ -308,11 +308,18 @@ else
 fi
 ```
 
+5. Root user
+   Two ways to become a root user:
+    - Run this code snippet with `sudo`, and you will get 'You are root' result.
+    - Or you can switch to root user by typing `su` at first.
+
+When you are not root, your might see `[vagrant@testbox01 localusers]$`, once you become the root user, it shows `[root@testbox01 localusers]#`
+
 ```
 ┌───────────┐
 | Variables |
 ├───────────┴────────────────────────────────────────────────────────────┐
-|1. Define a code snippet with `$(YOUR_COMMAND)` or `` `YOUR_COMMAND` `` |
+|1. Define a code snippet with $(YOUR_COMMAND) or  `YOUR_COMMAND`        |
 |2. Single quotes for value, double quotes for variable                  |
 └────────────────────────────────────────────────────────────────────────┘
 ```
