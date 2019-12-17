@@ -7,6 +7,8 @@
     -   [Permission](https://github.com/Catherine22/Linux-tutorial#permission)
     -   [echo](https://github.com/Catherine22/Linux-tutorial#echo)
     -   [Special variables](https://github.com/Catherine22/Linux-tutorial#special-variables)
+    -   [If statement](https://github.com/Catherine22/Linux-tutorial#if-statement)
+    -   [Exit status](https://github.com/Catherine22/Linux-tutorial#exit-status)
 
 ## Prerequisites
 
@@ -330,7 +332,8 @@ Rule 1
 
 ```shell
 if [[ xxx -eq xxx ]]
-  then # do something
+then
+    # do something
 fi;
 ```
 
@@ -348,4 +351,73 @@ To be readable, you can truncate commands by pressing `shift` + `enter`. No `;` 
 $if [[ 'a' -eq 'a' ]]
 >  then echo 'same'
 >fi
+```
+
+> -eg: equal  
+> -ne: not equal
+
+```
+┌────┐
+| If |
+├────┴───────────────────────────────────────────────────────────────────┐
+| if [[ condition1 ]]                                                    |
+| then                                                                   |
+|    // do something                                                     |
+| elif [[ condition2 ]]                                                  |
+| then                                                                   |
+|    // do something                                                     |
+| else                                                                   |
+|    // do something                                                     |
+| fi                                                                     |
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Exit status
+
+#### Principle of status code
+
+-   0: success
+-   Not 0: fail
+
+1. Check existed exit status, take `useradd` for example
+
+```shell
+$man useradd
+```
+
+2. Search the keyword "exit" by typing `/exit`, `n` for next and `N` for previous
+
+3. You will find
+
+```
+EXIT VALUES
+       The useradd command exits with the following values:
+
+       0
+           success
+
+       1
+           can't update password file
+
+       2
+           invalid command syntax
+
+       ...
+```
+
+#### Get the exit status of the previous command
+
+E.g.
+
+```shell
+USERNAME=$(id -un)
+
+# Test if the command worked (check the exit status of the previous command, i.e. 'id -un' in this case
+if [[ "${?}" -ne 0 ]]
+then
+  echo "The id command did not work successfully."
+  exit 2
+fi
+
+echo "Username: ${USERNAME}"
 ```
