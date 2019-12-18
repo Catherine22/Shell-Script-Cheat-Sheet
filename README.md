@@ -353,8 +353,8 @@ $if [[ 'a' -eq 'a' ]]
 >fi
 ```
 
-> -eg: equal  
-> -ne: not equal
+> `-eg` or `=`: equal  
+> `-ne` or `!=`: not equal
 
 ```
 ┌────┐
@@ -407,7 +407,7 @@ EXIT VALUES
 
 #### Get the exit status of the previous command
 
-E.g.
+1. Verify the command we've just typed (in shall script)
 
 ```shell
 USERNAME=$(id -un)
@@ -420,4 +420,50 @@ then
 fi
 
 echo "Username: ${USERNAME}"
+```
+
+2. Verify the command we've just typed (in bash)
+
+```shell
+$id -un
+```
+
+Then you get "vagrant"
+
+```shell
+$echo "${?}"
+```
+
+And you get 0
+
+Now if I run a false command like
+
+```shell
+$id -abc
+```
+
+You get the error:
+
+```
+id: invalid option -- 'b'
+Try 'id --help' for more information.
+```
+
+Get the exit status, and this time, it will be 1
+
+```shell
+$echo "${?}"
+```
+
+```
+┌─────────────┐
+| Exit status |
+├─────────────┴──────────────────────────────────────────────────────────┐
+| > status code                                                          |
+|   0: success                                                           |
+|   others: fail                                                         |
+|                                                                        |
+| > At the end of your shell script, add:                                |
+|   exit 0                                                               |
+└────────────────────────────────────────────────────────────────────────┘
 ```

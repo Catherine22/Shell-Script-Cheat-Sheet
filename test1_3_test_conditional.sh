@@ -23,3 +23,16 @@ then
 fi
 
 echo "Username: ${USERNAME}"
+
+
+# If-statement
+TEST_USERNAME='vagrant'
+
+if [[ "${USERNAME}" != "${TEST_USERNAME}" ]]
+then
+  echo "Your username does not match ${TEST_USERNAME}"
+  exit 1
+fi
+
+# To notify user that this script is done successfully.
+exit 0
