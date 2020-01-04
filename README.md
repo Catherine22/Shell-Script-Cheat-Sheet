@@ -9,6 +9,8 @@
     -   [Special variables](https://github.com/Catherine22/Linux-tutorial#special-variables)
     -   [If statement](https://github.com/Catherine22/Linux-tutorial#if-statement)
     -   [Exit status](https://github.com/Catherine22/Linux-tutorial#exit-status)
+    -   [Standard input](https://github.com/Catherine22/Linux-tutorial#standard-input)
+    -   [use case](https://github.com/Catherine22/Linux-tutorial#use-case)
 
 ## Prerequisites
 
@@ -467,3 +469,61 @@ $echo "${?}"
 |   exit 0                                                               |
 └────────────────────────────────────────────────────────────────────────┘
 ```
+
+### Standard Input
+
+Read the input with comments
+
+```shell
+$read -p 'type something: ' WORDS
+type something: Hello
+$echo "${WORDS}"
+Hello
+```
+
+### Use Case
+
+#### Create a new user
+
+-   create a new user
+
+```shell
+$sudo useradd -c stamper -m dougstamper
+```
+
+> -c, --comment COMMENT
+
+           Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name.
+
+> -m, --create-home
+
+           Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k option)
+           will be copied to the home directory.
+
+           By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
+
+           The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory cannot be
+           created or accessed.
+
+-   Set the password
+
+```shell
+$sudo echo 123456 | passwd  --stdin stamper
+$sudo passwd -e stamper
+```
+
+-   Switch to stamper, the user we just created
+
+```shell
+$sudo su - stamper
+```
+
+-   Logout
+
+```shell
+$exit
+```
+
+The script to create a user: [create-a-user script]
+
+[create-a-user script]: https://github.com/Catherine22/Linux-tutorial/blob/master/test1_4_test_input.sh
