@@ -11,6 +11,8 @@
     -   [Exit status](https://github.com/Catherine22/Linux-tutorial#exit-status)
     -   [Standard input](https://github.com/Catherine22/Linux-tutorial#standard-input)
     -   [use case](https://github.com/Catherine22/Linux-tutorial#use-case)
+        -   [Check if I am root](#check-if-i-am-root)
+        -   [Create a new user](#create-a-new-user)
 
 ## Prerequisites
 
@@ -262,10 +264,10 @@ echo "${LINE1}${LINE2}"
 ```
 ┌──────┐
 | echo |
-├──────┴─────────────────────────────────────────────────┐
-|1. No blanks                                            |
-|2. Single quotes for value, double quotes for variable  |
-└────────────────────────────────────────────────────────┘
+├──────┴─────────────────────────────────────────────────────────────────┐
+|1. No blanks                                                            |
+|2. Single quotes for value, double quotes for variable                  |
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Special variables
@@ -483,12 +485,23 @@ Hello
 
 ### Use Case
 
+#### Check if I am root
+
+```shell
+if [[ "${UID}" -eq 0 ]]
+then
+  echo 'You are root'
+else
+  echo 'You are not root'
+fi
+```
+
 #### Create a new user
 
 -   create a new user
 
 ```shell
-$sudo useradd -c stamper -m dougstamper
+$sudo useradd -c dougstamper -m stamper
 ```
 
 > -c, --comment COMMENT
@@ -509,13 +522,18 @@ $sudo useradd -c stamper -m dougstamper
 
 ```shell
 $sudo echo 123456 | passwd  --stdin stamper
+```
+
+-   Expire a password for an account. The user will be forced to change the password during the next login attempt.
+
+```shell
 $sudo passwd -e stamper
 ```
 
 -   Switch to stamper, the user we just created
 
 ```shell
-$sudo su - stamper
+$su - stamper
 ```
 
 -   Logout
@@ -524,6 +542,6 @@ $sudo su - stamper
 $exit
 ```
 
-The script to create a user: [create-a-user script]
+The script to create a user: [add_local_user.sh]
 
-[create-a-user script]: https://github.com/Catherine22/Linux-tutorial/blob/master/test1_4_test_input.sh
+[add_local_user.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/add_local_user.sh
