@@ -1,18 +1,24 @@
 # Linux-tutorial
 
--   [Prerequisites](https://github.com/Catherine22/Linux-tutorial#prerequisites)
-    -   [Useful vagrant commands](https://github.com/Catherine22/Linux-tutorial#useful-vagrant-commands)
--   [Shell script](https://github.com/Catherine22/Linux-tutorial#shell-script)
-    -   [Commands](https://github.com/Catherine22/Linux-tutorial#commands)
-    -   [Permission](https://github.com/Catherine22/Linux-tutorial#permission)
-    -   [echo](https://github.com/Catherine22/Linux-tutorial#echo)
-    -   [Special variables](https://github.com/Catherine22/Linux-tutorial#special-variables)
-    -   [If statement](https://github.com/Catherine22/Linux-tutorial#if-statement)
-    -   [Exit status](https://github.com/Catherine22/Linux-tutorial#exit-status)
-    -   [Standard input](https://github.com/Catherine22/Linux-tutorial#standard-input)
-    -   [use case](https://github.com/Catherine22/Linux-tutorial#use-case)
+-   [Prerequisites](#prerequisites)
+    -   [Useful vagrant commands](#useful-vagrant-commands)
+-   [Shell script](#shell-script)
+    -   [Commands](#commands)
+    -   [Permission](#permission)
+    -   [echo](#echo)
+    -   [Special variables](#special-variables)
+    -   [If statement](#if-statement)
+    -   [Exit status](#exit-status)
+    -   [Standard input](#standard-input)
+    -   [Checksum](#checksum)
+    -   [Random](#random)
+    -   [Head](#head)
+    -   [Stream manipulation](#stream-manipulation)
+    -   [Fold](#fold)
+    -   [use case](#use-case)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
+        -   [Password Generator](#password-generator)
 
 ## Prerequisites
 
@@ -483,6 +489,175 @@ $echo "${WORDS}"
 Hello
 ```
 
+### Checksum
+
+List all available checksum methods
+
+```shell
+$ls -l /usr/bin/*sum
+
+# -rwxr-xr-x 1 root root 33152 Aug 20 02:25 /usr/bin/cksum
+# -rwxr-xr-x 1 root root 41504 Aug 20 02:25 /usr/bin/md5sum
+# -rwxr-xr-x 1 root root 37448 Aug 20 02:25 /usr/bin/sha1sum
+# -rwxr-xr-x 1 root root 41608 Aug 20 02:25 /usr/bin/sha224sum
+# -rwxr-xr-x 1 root root 41608 Aug 20 02:25 /usr/bin/sha256sum
+# -rwxr-xr-x 1 root root 41624 Aug 20 02:25 /usr/bin/sha384sum
+# -rwxr-xr-x 1 root root 41624 Aug 20 02:25 /usr/bin/sha512sum
+# -rwxr-xr-x 1 root root 37432 Aug 20 02:25 /usr/bin/sum
+```
+
+> -b, --binary
+
+              read in binary mode
+
+> -c, --check
+
+              read SHA256 sums from the FILEs and check them
+
+> --tag create a BSD-style checksum
+
+> -t, --text
+
+              read in text mode (default)
+
+              Note: There is no difference between binary and text mode option on GNU system.
+
+Get the sha256sum of a file
+
+```shell
+$sha256sum YOUR_FILE
+```
+
+### Random
+
+Generate random numbers
+
+```shell
+echo ${RANDOM}
+
+# 3054
+```
+
+To dive into the random method, go to the [Password Generator](#password-generator) section
+
+### Head
+
+1. Print the first line of a file
+
+```shell
+# 1st line
+$head -n1 FILE_NAME
+
+# the first two lines
+$head -n2 FILE_NAME
+```
+
+2. Print the first character of a file
+
+```shell
+# 1st character
+$head -c1 FILE_NAME
+
+# the first three characters
+$head -c3 FILE_NAME
+```
+
+3. Print the first 5 characters of inputs
+
+```shell
+$echo 12345678 | head -c5
+```
+
+### Stream manipulation
+
+With `|`, you can manipulate the input stream.
+
+E.g. Print the first 5 characters of inputs
+
+```shell
+# You will get 12345
+$echo 12345678 | head -c5
+```
+
+And you can keep modify the inputs with multiple `|`
+
+E.g. Print the first 8 characters of the sha256 checksum of the timestamp
+
+```shell
+$date +%s | sha256sum | head -c8
+```
+
+### fold
+
+wrap each input line to fit in specified width
+
+> -b, --bytes
+
+              count bytes rather than columns
+
+> -c, --characters
+
+              count characters rather than columns
+
+> -s, --spaces
+
+              break at spaces
+
+> -w, --width=WIDTH
+
+              use WIDTH columns instead of 80
+
+For example
+
+```shell
+S='!@#$%^&*()_-+='
+echo "${S}" | fold -b1
+```
+
+You will get these characters printed on a single line one by one
+
+```
+!
+@
+#
+$
+%
+^
+&
+*
+(
+)
+_
+-
++
+=
+```
+
+A further use case of `fold` is to generate a random string. The `shuf` method works on shuffling lines of text, you cannot shuffle a string directly, you must fold it at first.
+
+```shell
+echo "${S}" | fold -c1 | shuf
+```
+
+```
+#
++
+=
+-
+@
+(
+$
+!
+*
+_
+^
+&
+%
+)
+```
+
+And you can print each line of the character by using `head`
+
 ### Use Case
 
 #### Check if I am root
@@ -544,4 +719,11 @@ $exit
 
 The script to create a user: [add_local_user.sh]
 
+### Password Generator
+
+-   Rule of thumb: [test1_5_pwd_generator.sh]
+-   Demo: [password_generator.sh]
+
 [add_local_user.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/add_local_user.sh
+[test1_5_pwd_generator.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/test1_5_pwd_generator.sh
+[password_generator.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/password_generator.sh
