@@ -15,6 +15,7 @@
     -   [Head](#head)
     -   [Stream manipulation](#stream-manipulation)
     -   [Fold](#fold)
+    -   [Create your very own command](#create-your-very-own-command)
     -   [use case](#use-case)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
@@ -167,6 +168,14 @@ Show the manual by typing `help`, you can also add `| less` to get it more reada
 $help test | less
 ```
 
+3. To know what command we are using, for example, if I type `$head`, where is this `head` from
+
+```shell
+$which head
+```
+
+And you will see `/usr/bin/head`
+
 ### Permission
 
 1. Check access permission at first
@@ -278,6 +287,17 @@ echo "${LINE1}${LINE2}"
 
 ### Special variables
 
+Here are the list of special variables this tutorial mentioned:
+
+-   `${UID}`
+-   `${EUID}`
+-   `${0}`
+-   `${?}`
+-   `${RANDOM}`
+-   `${PATH}`
+
+To see more bash variables, type `man bash`
+
 1. UID/EUID
 
 ```shell
@@ -326,6 +346,16 @@ fi
     - Or you can switch to root user by typing `su` at first.
 
 When you are not root, your might see `[vagrant@testbox01 localusers]$`, once you become the root user, it shows `[root@testbox01 localusers]#`
+
+6. Display what user typed on the command line. E.g. in test.sh
+
+```shell
+#!/bin/bash
+
+echo "You executed this command: ${0}"
+```
+
+and you run `./test.sh`, you will see `./test.sh`, but if you run this file by typing `/vagrant/localusers/test.sh`, it will print `/vagrant/localusers/test.sh`
 
 ```
 ┌───────────┐
@@ -399,21 +429,17 @@ $man useradd
 
 3. You will find
 
-```
-EXIT VALUES
-       The useradd command exits with the following values:
-
-       0
-           success
-
-       1
-           can't update password file
-
-       2
-           invalid command syntax
-
-       ...
-```
+> EXIT VALUES
+>
+> The useradd command exits with the following values:
+>
+> 0 success
+>
+> 1 can't update password file
+>
+> 2 invalid command syntax
+>
+> ...
 
 #### Get the exit status of the previous command
 
@@ -507,20 +533,20 @@ $ls -l /usr/bin/*sum
 ```
 
 > -b, --binary
-
-              read in binary mode
-
+>
+> read in binary mode
+>
 > -c, --check
-
-              read SHA256 sums from the FILEs and check them
-
+>
+> read SHA256 sums from the FILEs and check them
+>
 > --tag create a BSD-style checksum
-
+>
 > -t, --text
-
-              read in text mode (default)
-
-              Note: There is no difference between binary and text mode option on GNU system.
+>
+> read in text mode (default)
+>
+> Note: There is no difference between binary and text mode option on GNU system.
 
 Get the sha256sum of a file
 
@@ -592,20 +618,20 @@ $date +%s | sha256sum | head -c8
 wrap each input line to fit in specified width
 
 > -b, --bytes
-
-              count bytes rather than columns
-
+>
+> count bytes rather than columns
+>
 > -c, --characters
-
-              count characters rather than columns
-
+>
+> count characters rather than columns
+>
 > -s, --spaces
-
-              break at spaces
-
+>
+> break at spaces
+>
 > -w, --width=WIDTH
-
-              use WIDTH columns instead of 80
+>
+> use WIDTH columns instead of 80
 
 For example
 
@@ -658,6 +684,62 @@ _
 
 And you can print each line of the character by using `head`
 
+### Create your very own command
+
+To see where a command from, you can type `which`. E.g.
+
+```shell
+$which head
+```
+
+Then you will see `/usr/bin/head`
+
+1. To create my own `head` shell script
+
+```shell
+$vim user/local/bin/head
+```
+
+And fill in something like
+
+```shell
+#!/bin/bash
+
+echo 'Hello from my head'
+```
+
+2. Escalate the privilege
+
+```shell
+$sudo chmod 755 /usr/local/bin/head
+```
+
+3. Check if your head command is changed
+
+```shell
+$which head
+```
+
+And you will see `/usr/local/bin/head`. Besides, you can list all matches by typing `$which -a head`.
+
+4. Run the `head` command
+
+```shell
+$head # Hello from my head
+```
+
+5. You can still run the previous head by assigning the full path. E.g.
+
+```shell
+$/usr/bin/head -n1 /etc/passwd
+```
+
+6. Remove the `head` and stop using this user-defined shell script.
+
+```shell
+$sudo rm /usr/local/bin/head
+```
+
 ### Use Case
 
 #### Check if I am root
@@ -680,18 +762,17 @@ $sudo useradd -c dougstamper -m stamper
 ```
 
 > -c, --comment COMMENT
-
-           Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name.
+>
+> Any text string. It is generally a short description of the login, and is currently used as the field for the user's full name.
 
 > -m, --create-home
-
-           Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k option)
-           will be copied to the home directory.
-
-           By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
-
-           The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory cannot be
-           created or accessed.
+>
+> Create the user's home directory if it does not exist. The files and directories contained in the skeleton directory (which can be defined with the -k option)
+> will be copied to the home directory.
+>
+> By default, if this option is not specified and CREATE_HOME is not enabled, no home directories are created.
+>
+> The directory where the user's home directory is created must exist and have proper SELinux context and permissions. Otherwise the user's home directory cannot be created or accessed.
 
 -   Set the password
 
