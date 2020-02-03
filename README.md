@@ -15,7 +15,10 @@
     -   [Head](#head)
     -   [Stream manipulation](#stream-manipulation)
     -   [Fold](#fold)
+    -   [Path](#path)
     -   [Create your very own command](#create-your-very-own-command)
+    -   [Input arguments](#input-arguments)
+    -   [For-loop](#for-loop)
     -   [use case](#use-case)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
@@ -395,6 +398,7 @@ $if [[ 'a' -eq 'a' ]]
 
 > `-eg` or `=`: equal  
 > `-ne` or `!=`: not equal
+> `-lt`: less than, which comes with a number.
 
 ```
 ┌────┐
@@ -684,6 +688,26 @@ _
 
 And you can print each line of the character by using `head`
 
+### Path
+
+E.g. I have a file in /vagrant/localusers/test1_6.sh
+
+1. `basename`: Get the file name (removed the directory)
+
+```shell
+$basename /vagrant/localusers/test1_6.sh
+```
+
+It returns `test1_6.sh`
+
+2. `dirname`: Get the path of a file (except the file itself)
+
+```shell
+$dirname /vagrant/localusers/test1_6.sh
+```
+
+It returns `/vagrant/localusers`
+
 ### Create your very own command
 
 To see where a command from, you can type `which`. E.g.
@@ -738,6 +762,45 @@ $/usr/bin/head -n1 /etc/passwd
 
 ```shell
 $sudo rm /usr/local/bin/head
+```
+
+7. Run `head` to see if it works properly. If not, run
+
+```shell
+# This command is to forget all remembered locations
+$hash -r
+```
+
+### Input arguments
+
+See how many arguments user inputs
+
+```shell
+NUMBERS_OF_PARAMS="${#}"
+
+echo "You supplied ${NUMBERS_OF_PARAMS} argument(s) on the command line"
+```
+
+Get argument(s) by using for-loop.
+
+### For-loop
+
+Get all arguments
+
+```shell
+for ARGUMENT in "${@}"
+do
+  echo "${ARGUMENT}"
+done
+```
+
+If you want to gather all input characters including whitespace as one argument, you can do
+
+```shell
+for ARGUMENT in "${*}"
+do
+  echo "${ARGUMENT}"
+done
 ```
 
 ### Use Case
