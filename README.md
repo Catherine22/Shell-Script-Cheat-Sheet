@@ -19,7 +19,7 @@
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
     -   [Loop](#Loop)
-    -   [use case](#use-case)
+    -   [Use Cases](#use-cases)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
@@ -834,12 +834,12 @@ done
 ```shell
 while [[ "${#}" -gt 0 ]]
 do
-   echo "Number of parameters: ${#}"
-   echo "Param 1: ${1}"
-   echo "Param 2: ${2}"
-   echo "Param 3: ${3}"
-   echo
-   shift
+  echo "Number of parameters: ${#}"
+  echo "Param 1: ${1}"
+  echo "Param 2: ${2}"
+  echo "Param 3: ${3}"
+  echo
+  shift
 done
 ```
 
@@ -865,37 +865,37 @@ Param 3:
 ```
 
 ```
-┌─────────────┐──────────────┐
+┌─────────────┬──────────────┐
 │   for-loop  │  while-loop  │
 ├─────────────┴──────────────┴───────────────────────────────────────────┐
 │ > for-loop # print 1-5                                                 │
 │   for e in {1..5}                                                      │
 │   do                                                                   │
-│      echo "${e}"                                                       │
+│     echo "${e}"                                                        │
 │   done                                                                 │
 │                                                                        │
 │ > for-loop # print 1, 3, 5, 7, 9                                       │
 │   for e in {1..9..2}                                                   │
 │   do                                                                   │
-│      echo "${e}"                                                       │
+│     echo "${e}"                                                        │
 │   done                                                                 │
 │                                                                        │
 │ > for-loop # Loop an array                                             │
 │   CARS=('sedan' 'suv' 'hatchback')                                     │
 │   for e in ${CARS[*]}                                                  │
 │   do                                                                   │
-│      echo "${e}"                                                       │
+│     echo "${e}"                                                        │
 │   done                                                                 │
 ├────────────────────────────────────────────────────────────────────────┤
 │ > while-loop                                                           │
 │   while [[ CONDITION ]]                                                │
 │   do                                                                   │
-│   # do something                                                       │
+│     # do something                                                     │
 │   done                                                                 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Use Case
+### Use Cases
 
 #### Check if I am root
 
