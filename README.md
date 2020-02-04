@@ -18,11 +18,12 @@
     -   [Path](#path)
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
-    -   [For-loop](#for-loop)
+    -   [Loop](#Loop)
     -   [use case](#use-case)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
+        -   [Create local users with random passwords](#create-local-users-with-random-passwords)
 
 ## Prerequisites
 
@@ -399,6 +400,7 @@ $if [[ 'a' -eq 'a' ]]
 > `-eg` or `=`: equal  
 > `-ne` or `!=`: not equal
 > `-lt`: less than, which comes with a number.
+> `-gt`: great than, which comes with a number.
 
 ```
 ┌────┐
@@ -690,7 +692,7 @@ And you can print each line of the character by using `head`
 
 ### Path
 
-E.g. I have a file in /vagrant/localusers/test1_6.sh
+E.g. I have a file in /vagrant/localusers/[test1_6.sh]
 
 1. `basename`: Get the file name (removed the directory)
 
@@ -781,9 +783,29 @@ NUMBERS_OF_PARAMS="${#}"
 echo "You supplied ${NUMBERS_OF_PARAMS} argument(s) on the command line"
 ```
 
-Get argument(s) by using for-loop.
+The simplest way to get input arguments is `"${1}"`.
 
-### For-loop
+E.g. in test.sh, you type `$./test.sh A B C D E`
+
+```shell
+echo "Parameter 1: ${1}"
+echo "Parameter 2: ${2}"
+echo "Parameter 3: ${3}"
+```
+
+You will get
+
+```
+Parameter 1: A
+Parameter 2: B
+Parameter 3: C
+```
+
+You will lose rest of the arguments. In order to get all arguments, you need a for-loop or while-loop.
+
+### Loop
+
+#### For-loop
 
 Get all arguments
 
@@ -801,6 +823,76 @@ for ARGUMENT in "${*}"
 do
   echo "${ARGUMENT}"
 done
+```
+
+#### While-loop
+
+`while` + `shift`
+
+1. Create a script [test1_7.sh]
+
+```shell
+while [[ "${#}" -gt 0 ]]
+do
+   echo "Number of parameters: ${#}"
+   echo "Param 1: ${1}"
+   echo "Param 2: ${2}"
+   echo "Param 3: ${3}"
+   echo
+   shift
+done
+```
+
+> `-gt`: great then
+
+2. Run `./test1_7.sh A B C`, and then you will get
+
+```
+Number of parameters: 3
+Param 1: A
+Param 2: B
+Param 3: C
+
+Number of parameters: 2
+Param 1: B
+Param 2: C
+Param 3:
+
+Number of parameters: 1
+Param 1: C
+Param 2:
+Param 3:
+```
+
+```
+┌─────────────┐──────────────┐
+|   for-loop  |  while-loop  |
+├─────────────┴──────────────┴───────────────────────────────────────────┐
+| > for-loop # print 1-5                                                 |
+|   for e in {1..5}                                                      |
+|   do                                                                   |
+|      echo "${e}"                                                       |
+|   done                                                                 |
+|                                                                        |
+| > for-loop # print 1, 3, 5, 7, 9                                       |
+|   for e in {1..9..2}                                                   |
+|   do                                                                   |
+|      echo "${e}"                                                       |
+|   done                                                                 |
+|                                                                        |
+| > for-loop # Loop an array                                             |
+|   CARS=('sedan' 'suv' 'hatchback')                                     |
+|   for e in ${CARS[*]}                                                  |
+|   do                                                                   |
+|      echo "${e}"                                                       |
+|   done                                                                 |
+└────────────────────────────────────────────────────────────────────────┘
+| > while-loop                                                           |
+|   while [[ CONDITION ]]                                                |
+|   do                                                                   |
+|   # do something                                                       |
+|   done                                                                 |
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Use Case
@@ -868,6 +960,17 @@ The script to create a user: [add_local_user.sh]
 -   Rule of thumb: [test1_5_pwd_generator.sh]
 -   Demo: [password_generator.sh]
 
-[add_local_user.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/add_local_user.sh
-[test1_5_pwd_generator.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/test1_5_pwd_generator.sh
-[password_generator.sh]: https://github.com/Catherine22/Linux-tutorial/blob/master/password_generator.sh
+### Create local users with random passwords
+
+-   Demo: [add_local_users.sh]
+
+```shell
+$./add_local_users.sh Kent David Emma
+```
+
+[add_local_user.sh]: add_local_user.sh
+[add_local_users.sh]: add_local_users.sh
+[test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
+[password_generator.sh]: password_generator.sh
+[test1_6.sh]: test1_6.sh
+[test1_7.sh]: test1_7.sh
