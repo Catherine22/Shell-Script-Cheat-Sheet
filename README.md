@@ -1,4 +1,4 @@
-# Linux-tutorial
+# Linux Shell Script Cheat Sheet
 
 -   [Prerequisites](#prerequisites)
     -   [Useful vagrant commands](#useful-vagrant-commands)
@@ -282,10 +282,10 @@ echo "${LINE1}${LINE2}"
 
 ```
 ┌──────┐
-| echo |
+│ echo │
 ├──────┴─────────────────────────────────────────────────────────────────┐
-|1. No blanks                                                            |
-|2. Single quotes for value, double quotes for variable                  |
+│1. No blanks                                                            │
+│2. Single quotes for value, double quotes for variable                  │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -363,10 +363,10 @@ and you run `./test.sh`, you will see `./test.sh`, but if you run this file by t
 
 ```
 ┌───────────┐
-| Variables |
+│ Variables │
 ├───────────┴────────────────────────────────────────────────────────────┐
-|1. Define a code snippet with $(YOUR_COMMAND) or  `YOUR_COMMAND`        |
-|2. Single quotes for value, double quotes for variable                  |
+│1. Define a code snippet with $(YOUR_COMMAND) or  `YOUR_COMMAND`        │
+│2. Single quotes for value, double quotes for variable                  │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -404,17 +404,17 @@ $if [[ 'a' -eq 'a' ]]
 
 ```
 ┌────┐
-| If |
+│ If │
 ├────┴───────────────────────────────────────────────────────────────────┐
-| if [[ condition1 ]]                                                    |
-| then                                                                   |
-|    // do something                                                     |
-| elif [[ condition2 ]]                                                  |
-| then                                                                   |
-|    // do something                                                     |
-| else                                                                   |
-|    // do something                                                     |
-| fi                                                                     |
+│ if [[ condition1 ]]                                                    │
+│ then                                                                   │
+│    // do something                                                     │
+│ elif [[ condition2 ]]                                                  │
+│ then                                                                   │
+│    // do something                                                     │
+│ else                                                                   │
+│    // do something                                                     │
+│ fi                                                                     │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -499,14 +499,14 @@ $echo "${?}"
 
 ```
 ┌─────────────┐
-| Exit status |
+│ Exit status │
 ├─────────────┴──────────────────────────────────────────────────────────┐
-| > status code                                                          |
-|   0: success                                                           |
-|   others: fail                                                         |
-|                                                                        |
-| > At the end of your shell script, add:                                |
-|   exit 0                                                               |
+│ > status code                                                          │
+│   0: success                                                           │
+│   others: fail                                                         │
+│                                                                        │
+│ > At the end of your shell script, add:                                │
+│   exit 0                                                               │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -866,32 +866,32 @@ Param 3:
 
 ```
 ┌─────────────┐──────────────┐
-|   for-loop  |  while-loop  |
+│   for-loop  │  while-loop  │
 ├─────────────┴──────────────┴───────────────────────────────────────────┐
-| > for-loop # print 1-5                                                 |
-|   for e in {1..5}                                                      |
-|   do                                                                   |
-|      echo "${e}"                                                       |
-|   done                                                                 |
-|                                                                        |
-| > for-loop # print 1, 3, 5, 7, 9                                       |
-|   for e in {1..9..2}                                                   |
-|   do                                                                   |
-|      echo "${e}"                                                       |
-|   done                                                                 |
-|                                                                        |
-| > for-loop # Loop an array                                             |
-|   CARS=('sedan' 'suv' 'hatchback')                                     |
-|   for e in ${CARS[*]}                                                  |
-|   do                                                                   |
-|      echo "${e}"                                                       |
-|   done                                                                 |
-└────────────────────────────────────────────────────────────────────────┘
-| > while-loop                                                           |
-|   while [[ CONDITION ]]                                                |
-|   do                                                                   |
-|   # do something                                                       |
-|   done                                                                 |
+│ > for-loop # print 1-5                                                 │
+│   for e in {1..5}                                                      │
+│   do                                                                   │
+│      echo "${e}"                                                       │
+│   done                                                                 │
+│                                                                        │
+│ > for-loop # print 1, 3, 5, 7, 9                                       │
+│   for e in {1..9..2}                                                   │
+│   do                                                                   │
+│      echo "${e}"                                                       │
+│   done                                                                 │
+│                                                                        │
+│ > for-loop # Loop an array                                             │
+│   CARS=('sedan' 'suv' 'hatchback')                                     │
+│   for e in ${CARS[*]}                                                  │
+│   do                                                                   │
+│      echo "${e}"                                                       │
+│   done                                                                 │
+├────────────────────────────────────────────────────────────────────────┤
+│ > while-loop                                                           │
+│   while [[ CONDITION ]]                                                │
+│   do                                                                   │
+│   # do something                                                       │
+│   done                                                                 │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
