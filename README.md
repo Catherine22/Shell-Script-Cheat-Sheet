@@ -9,7 +9,8 @@
     -   [Special variables](#special-variables)
     -   [If statement](#if-statement)
     -   [Exit status](#exit-status)
-    -   [Standard input](#standard-input)
+    -   [Standard Input](#standard-input)
+    -   [Standard Output](#standard-output)
     -   [Checksum](#checksum)
     -   [Random](#random)
     -   [Head](#head)
@@ -512,13 +513,63 @@ $echo "${?}"
 
 ### Standard Input
 
-Read the input with comments
+Aka. STDIN
+
+-   Read the input with comments
 
 ```shell
 $read -p 'type something: ' WORDS
 type something: Hello
 $echo "${WORDS}"
 Hello
+```
+
+-   Read one line of STDIN
+
+```shell
+# Create a file at first
+FILE="tmp"
+echo "hello" > ${FILE}
+
+# Read the first line of the tmp file
+read LINE_1 < ${FILE}
+echo "Line 1: ${LINE_1}"
+```
+
+### Standard Output
+
+Aka. STDOUT
+
+-   Write the output to a file.
+
+```shell
+FILE="tmp"
+head -n3 /etc/passwd > ${FILE}
+```
+
+You will get `tmp` file filled in
+
+```
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+```
+
+-   Append string to next line.
+
+```shell
+echo $(date | sha256sum | head -c10) >> ${FILE}
+echo "end" >> ${FILE}
+```
+
+The tmp file will be written
+
+```
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+84ba4cc4cf
+end
 ```
 
 ### Checksum
@@ -829,7 +880,7 @@ done
 
 `while` + `shift`
 
-1. Create a script [test1_7.sh]
+1. Create a script test.sh
 
 ```shell
 while [[ "${#}" -gt 0 ]]
@@ -845,7 +896,7 @@ done
 
 > `-gt`: great then
 
-2. Run `./test1_7.sh A B C`, and then you will get
+2. Run `./test.sh A B C`, and then you will get
 
 ```
 Number of parameters: 3
@@ -913,7 +964,7 @@ fi
 -   create a new user
 
 ```shell
-$sudo useradd -c dougstamper -m stamper
+$sudo useradd -c leonardo-da-vinci -m da-vinci
 ```
 
 > -c, --comment COMMENT
@@ -931,20 +982,30 @@ $sudo useradd -c dougstamper -m stamper
 
 -   Set the password
 
+Using `echo`
+
 ```shell
-$sudo echo 123456 | passwd  --stdin stamper
+$sudo echo 123456 | passwd  --stdin da-vinci
+```
+
+Or using STDIN
+
+```shell
+# Create a password file
+echo "123456" > secret
+passwd --stdin da-vinci < secret
 ```
 
 -   Expire a password for an account. The user will be forced to change the password during the next login attempt.
 
 ```shell
-$sudo passwd -e stamper
+$sudo passwd -e da-vinci
 ```
 
--   Switch to stamper, the user we just created
+-   Switch to da-vinci, the user we just created
 
 ```shell
-$su - stamper
+$su - da-vinci
 ```
 
 -   Logout
@@ -973,4 +1034,3 @@ $./add_local_users.sh Kent David Emma
 [test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
 [password_generator.sh]: password_generator.sh
 [test1_6.sh]: test1_6.sh
-[test1_7.sh]: test1_7.sh
