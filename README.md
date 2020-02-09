@@ -1,16 +1,23 @@
 # Linux Shell Script Cheat Sheet
 
 -   [Prerequisites](#prerequisites)
+
     -   [Useful vagrant commands](#useful-vagrant-commands)
+
 -   [Shell script](#shell-script)
+
     -   [Commands](#commands)
     -   [Permission](#permission)
     -   [echo](#echo)
     -   [Special variables](#special-variables)
     -   [If statement](#if-statement)
     -   [Exit status](#exit-status)
-    -   [Standard Input](#standard-input)
-    -   [Standard Output](#standard-output)
+    -   [File Descriptors](#file-descriptors)
+
+        -   [Standard Input](#standard-input)
+        -   [Standard Output](#standard-output)
+        -   [Standard Error](#standard-error)
+
     -   [Checksum](#checksum)
     -   [Random](#random)
     -   [Head](#head)
@@ -21,6 +28,7 @@
     -   [Input arguments](#input-arguments)
     -   [Loop](#Loop)
     -   [Use Cases](#use-cases)
+
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
@@ -511,7 +519,19 @@ $echo "${?}"
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Standard Input
+### File Descriptors
+
+A file descriptor is simply a number that represents a open file.
+
+By default, every new process starts with 3 open file descriptors:
+
+-   FD 0: STDIN
+-   FD 1: STDOUT
+-   FD 2: STDERR
+
+By default, a STDIN comes from your keyboard, and STDOUT and STDERR are displayed on the screen. None of them are files. In fact, Linux represents practically everything as a file.
+
+#### Standard Input
 
 Aka. STDIN
 
@@ -536,7 +556,19 @@ read LINE_1 < ${FILE}
 echo "Line 1: ${LINE_1}"
 ```
 
-### Standard Output
+-   Read implicitly or explicitly
+
+```shell
+# Read files in an implicit way (using default file descriptor (0))
+$read x < /etc/centos-release
+$echo "${x}"
+
+# Read files in an explicit way (NOTICE, no space between 0 and <)
+$read x 0< /etc/centos-release
+$echo "${x}"
+```
+
+#### Standard Output
 
 Aka. STDOUT
 
@@ -570,6 +602,113 @@ bin:x:1:1:bin:/bin:/sbin/nologin
 daemon:x:2:2:daemon:/sbin:/sbin/nologin
 84ba4cc4cf
 end
+```
+
+-   Write implicitly or explicitly
+
+```shell
+# Write files in an implicit way (using default file descriptor (1))
+$echo "${UID}" > uid
+$cat uid
+
+# Read files in an explicit way (NOTICE, no space between 1 and >)
+$echo "${UID}" 1> uid
+$cat uid
+```
+
+#### Standard Error
+
+-   Prerequisites
+
+Here is a head command, it prints the first line of designated files
+
+```shell
+$head -n1 /etc/passwd /etc/hosts
+```
+
+It will print:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+```
+
+Now, to make this command malfunction, we add an fake file.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile
+```
+
+The first two files still work properly, but it shows an error message underneath.
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+head: cannot open ‘fakefile’ for reading: No such file or directory
+```
+
+If we write the outputs into a file, this error message will not be written.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.out
+$cat head.out
+```
+
+It will print:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+```
+
+-   STDERR
+
+But if we specify its file descriptor to 2 (STDERR)
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile 2> head.err
+$cat head.err
+```
+
+It will print:
+
+```
+head: cannot open ‘fakefile’ for reading: No such file or directory
+```
+
+We can merge make this operation a bit fancy. I.e. using STDOUT and STDERR in one command:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.out 2> head.err
+```
+
+Or you can append error messages by using `2>>`
+
+Another common feature is to merge STDOUT and STDERR together:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.both 2>&1
+$cat head.both
+```
+
+It will print:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1 testbox01 testbox01
+head: cannot open ‘fakefile’ for reading: No such file or directory
 ```
 
 ### Checksum
@@ -649,6 +788,22 @@ $head -c3 FILE_NAME
 
 ```shell
 $echo 12345678 | head -c5
+```
+
+4. Another feature of `head` command is to read multiple files. E.g.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts
+```
+
+And you will get:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
 ```
 
 ### Stream manipulation
