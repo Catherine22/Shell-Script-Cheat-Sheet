@@ -429,6 +429,13 @@ $if [[ 'a' -eq 'a' ]]
 
 ### Exit status
 
+To check if your command works properly, you don't need to see the STDOUT or STDERR, you should check the exit status.
+
+```shell
+# 0: success; non-zero: error
+$echo ${?}
+```
+
 #### Principle of status code
 
 -   0: success
@@ -572,6 +579,12 @@ $echo "${x}"
 
 Aka. STDOUT
 
+Formula: `STATEMENT1 TYPE> STATEMENT2`
+
+> STATEMENT1: a statement that will through info  
+> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `>&`  
+> STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
+
 -   Write the output to a file.
 
 ```shell
@@ -617,6 +630,13 @@ $cat uid
 ```
 
 #### Standard Error
+
+To check if your command works properly, you don't need to see the STDOUT or STDERR, you should check the exit status.
+
+```shell
+# 0: success; non-zero: error
+$echo ${?}
+```
 
 -   Prerequisites
 
@@ -697,18 +717,79 @@ Another common feature is to merge STDOUT and STDERR together:
 
 ```shell
 $head -n1 /etc/passwd /etc/hosts fakefile > head.both 2>&1
-$cat head.both
+```
+
+which is equivalent to the shorter statement below:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile &> head.both
+```
+
+Run `cat -n` to print it with number of lines.
+
+```shell
+$cat -n head.both
 ```
 
 It will print:
 
 ```
-==> /etc/passwd <==
-root:x:0:0:root:/root:/bin/bash
+     1	==> /etc/passwd <==
+     2	root:x:0:0:root:/root:/bin/bash
+     3
+     4	==> /etc/hosts <==
+     5	127.0.0.1	testbox01	testbox01
+     6	head: cannot open ‘fakefile’ for reading: No such file or directory
+```
 
-==> /etc/hosts <==
-127.0.0.1 testbox01 testbox01
-head: cannot open ‘fakefile’ for reading: No such file or directory
+In pine, STDERR cannot be passed directly, you have convert it to STDOUT at first. Both STDOUT and STDERR go through the pine. E.g.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile 2>&1 | cat
+```
+
+It is equivalent to another statement
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile |& cat
+```
+
+```
+┌─────────────────────────────────┐
+│ Standard Input / Output / Error │
+├─────────────────────────────────┴──────────────────────────────────────┐
+│ > 0: STDIN                                                             │
+│   1: STDOUT                                                            │
+│   2: STDERR                                                            │
+│                                                                        │
+│ > STDIN:                                                               │
+│   $read x 0< /etc/centos-release                                       │
+│   = $read x < /etc/centos-release                                      │
+│                                                                        │
+│ > STDOUT:                                                              │
+│   > No STDERR                                                          │
+│     $head -n1 /etc/passwd /etc/hosts fakefile > head.both              │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile 1> head.both           │
+│   > Combine STDERR                                                     │
+│     $head -n1 /etc/passwd /etc/hosts fakefile &> head.both             │
+│   > Send STDOUT to STDERR                                              │
+│     $echo 'error' 1>&2 | cat -n                                        │
+│     = $echo 'error' >&2 | cat -n                                       │
+│   > Hide STDOUT                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 1> /dev/null             │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile > /dev/null            │
+│                                                                        │
+│ > STDERR:                                                              │
+│   > STDERR Only                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2> head.err              │
+│   > Send STDERR to STDOUT (In pine, STDERR cannot be passed directly)  |
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2>&1 | cat               │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile |& cat                 │
+│   > Hide STDERR                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2> /dev/null             │
+│   > Hide STDOUT and STDERR                                             │
+│     $head -n1 /etc/passwd /etc/hosts fakefile &> /dev/null             │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Checksum
