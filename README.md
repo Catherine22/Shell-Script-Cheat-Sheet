@@ -582,7 +582,7 @@ Aka. STDOUT
 Formula: `STATEMENT1 TYPE> STATEMENT2`
 
 > STATEMENT1: a statement that will through info  
-> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `>&`  
+> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
 > STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
 
 -   Write the output to a file.
@@ -754,6 +754,12 @@ It is equivalent to another statement
 $head -n1 /etc/passwd /etc/hosts fakefile |& cat
 ```
 
+Formula: `STATEMENT1 TYPE> STATEMENT2`
+
+> STATEMENT1: a statement that will through info  
+> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
+> STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
+
 ```
 ┌─────────────────────────────────┐
 │ Standard Input / Output / Error │
@@ -765,6 +771,15 @@ $head -n1 /etc/passwd /etc/hosts fakefile |& cat
 │ > STDIN:                                                               │
 │   $read x 0< /etc/centos-release                                       │
 │   = $read x < /etc/centos-release                                      │
+│                                                                        │
+│                                                                        │
+│ > Formula: `STATEMENT1 TYPE> STATEMENT2`                               │
+│   > STATEMENT1: a statement that will through info                     │
+│   > TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`;         │
+│     Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`   │
+│   > STATEMENT2: Somewhere to keep outputs or `cat` statement to show   │
+│     on screen.                                                         │
+│                                                                        │
 │                                                                        │
 │ > STDOUT:                                                              │
 │   > No STDERR                                                          │
