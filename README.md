@@ -580,9 +580,11 @@ $echo "${x}"
 Aka. STDOUT
 
 Formula: `STATEMENT1 TYPE> STATEMENT2`
+Formula: `STATEMENT1 TYPE>> STATEMENT2`
 
 > STATEMENT1: a statement that will through info  
 > TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
+> `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the next line.  
 > STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
 
 -   Write the output to a file.
@@ -755,9 +757,11 @@ $head -n1 /etc/passwd /etc/hosts fakefile |& cat
 ```
 
 Formula: `STATEMENT1 TYPE> STATEMENT2`
+Formula: `STATEMENT1 TYPE>> STATEMENT2`
 
 > STATEMENT1: a statement that will through info  
 > TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
+> `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the next line.  
 > STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
 
 ```
@@ -771,15 +775,15 @@ Formula: `STATEMENT1 TYPE> STATEMENT2`
 │ > STDIN:                                                               │
 │   $read x 0< /etc/centos-release                                       │
 │   = $read x < /etc/centos-release                                      │
-│                                                                        │
-│                                                                        │
+├────────────────────────────────────────────────────────────────────────┤
 │ > Formula: `STATEMENT1 TYPE> STATEMENT2`                               │
 │   > STATEMENT1: a statement that will through info                     │
 │   > TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`;         │
 │     Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`   │
+│   > `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the │
+│      next line.                                                        │
 │   > STATEMENT2: Somewhere to keep outputs or `cat` statement to show   │
 │     on screen.                                                         │
-│                                                                        │
 │                                                                        │
 │ > STDOUT:                                                              │
 │   > No STDERR                                                          │
@@ -797,7 +801,7 @@ Formula: `STATEMENT1 TYPE> STATEMENT2`
 │ > STDERR:                                                              │
 │   > STDERR Only                                                        │
 │     $head -n1 /etc/passwd /etc/hosts fakefile 2> head.err              │
-│   > Send STDERR to STDOUT (In pine, STDERR cannot be passed directly)  |
+│   > Send STDERR to STDOUT (In pine, STDERR cannot be passed directly)  │
 │     $head -n1 /etc/passwd /etc/hosts fakefile 2>&1 | cat               │
 │     = $head -n1 /etc/passwd /etc/hosts fakefile |& cat                 │
 │   > Hide STDERR                                                        │
@@ -1274,10 +1278,34 @@ The script to create a user: [add_local_user.sh]
 
 ### Create local users with random passwords
 
+-   The script allow you to:
+
+    1. Create local user
+    2. Generate a random password for local user
+    3. Return exit status and log
+    4. Print username(s) and password(s) on console
+
 -   Demo: [add_local_users.sh]
 
 ```shell
 $./add_local_users.sh Kent David Emma
+```
+
+### Create local users with random passwords and keep STDOUT and STDERR to a log file.
+
+-   The script allow you to:
+
+    1. Create local user
+    2. Generate a random password for local user
+    3. Return exit status (0: Success; 1: failure + STDERR)
+    4. Keep log to a `log.txt` file
+    5. Hide STDOUT of statements, and keep STDERR to the log file
+    6. Print username(s) and password(s) on console
+
+-   Demo: [add_local_users_prod.sh]
+
+```shell
+$./add_local_users_prod.sh Kent David Emma
 ```
 
 [add_local_user.sh]: add_local_user.sh
