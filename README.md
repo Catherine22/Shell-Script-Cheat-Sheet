@@ -1,15 +1,23 @@
 # Linux Shell Script Cheat Sheet
 
 -   [Prerequisites](#prerequisites)
+
     -   [Useful vagrant commands](#useful-vagrant-commands)
+
 -   [Shell script](#shell-script)
+
     -   [Commands](#commands)
     -   [Permission](#permission)
     -   [echo](#echo)
     -   [Special variables](#special-variables)
     -   [If statement](#if-statement)
     -   [Exit status](#exit-status)
-    -   [Standard input](#standard-input)
+    -   [File Descriptors](#file-descriptors)
+
+        -   [Standard Input](#standard-input)
+        -   [Standard Output](#standard-output)
+        -   [Standard Error](#standard-error)
+
     -   [Checksum](#checksum)
     -   [Random](#random)
     -   [Head](#head)
@@ -20,6 +28,7 @@
     -   [Input arguments](#input-arguments)
     -   [Loop](#Loop)
     -   [Use Cases](#use-cases)
+
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
@@ -420,6 +429,13 @@ $if [[ 'a' -eq 'a' ]]
 
 ### Exit status
 
+To check if your command works properly, you don't need to see the STDOUT or STDERR, you should check the exit status.
+
+```shell
+# 0: success; non-zero: error
+$echo ${?}
+```
+
 #### Principle of status code
 
 -   0: success
@@ -510,15 +526,289 @@ $echo "${?}"
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Standard Input
+### File Descriptors
 
-Read the input with comments
+A file descriptor is simply a number that represents a open file.
+
+By default, every new process starts with 3 open file descriptors:
+
+-   FD 0: STDIN
+-   FD 1: STDOUT
+-   FD 2: STDERR
+
+By default, a STDIN comes from your keyboard, and STDOUT and STDERR are displayed on the screen. None of them are files. In fact, Linux represents practically everything as a file.
+
+#### Standard Input
+
+Aka. STDIN
+
+-   Read the input with comments
 
 ```shell
 $read -p 'type something: ' WORDS
 type something: Hello
 $echo "${WORDS}"
 Hello
+```
+
+-   Read one line of STDIN
+
+```shell
+# Create a file at first
+FILE="tmp"
+echo "hello" > ${FILE}
+
+# Read the first line of the tmp file
+read LINE_1 < ${FILE}
+echo "Line 1: ${LINE_1}"
+```
+
+-   Read implicitly or explicitly
+
+```shell
+# Read files in an implicit way (using default file descriptor (0))
+$read x < /etc/centos-release
+$echo "${x}"
+
+# Read files in an explicit way (NOTICE, no space between 0 and <)
+$read x 0< /etc/centos-release
+$echo "${x}"
+```
+
+#### Standard Output
+
+Aka. STDOUT
+
+Formula: `STATEMENT1 TYPE> STATEMENT2`
+Formula: `STATEMENT1 TYPE>> STATEMENT2`
+
+> STATEMENT1: a statement that will through info  
+> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
+> `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the next line.  
+> STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
+
+-   Write the output to a file.
+
+```shell
+FILE="tmp"
+head -n3 /etc/passwd > ${FILE}
+```
+
+You will get `tmp` file filled in
+
+```
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+```
+
+-   Append string to next line.
+
+```shell
+echo $(date | sha256sum | head -c10) >> ${FILE}
+echo "end" >> ${FILE}
+```
+
+The tmp file will be written
+
+```
+root:x:0:0:root:/root:/bin/bash
+bin:x:1:1:bin:/bin:/sbin/nologin
+daemon:x:2:2:daemon:/sbin:/sbin/nologin
+84ba4cc4cf
+end
+```
+
+-   Write implicitly or explicitly
+
+```shell
+# Write files in an implicit way (using default file descriptor (1))
+$echo "${UID}" > uid
+$cat uid
+
+# Read files in an explicit way (NOTICE, no space between 1 and >)
+$echo "${UID}" 1> uid
+$cat uid
+```
+
+#### Standard Error
+
+To check if your command works properly, you don't need to see the STDOUT or STDERR, you should check the exit status.
+
+```shell
+# 0: success; non-zero: error
+$echo ${?}
+```
+
+-   Prerequisites
+
+Here is a head command, it prints the first line of designated files
+
+```shell
+$head -n1 /etc/passwd /etc/hosts
+```
+
+It will print:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+```
+
+Now, to make this command malfunction, we add an fake file.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile
+```
+
+The first two files still work properly, but it shows an error message underneath.
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+head: cannot open ‘fakefile’ for reading: No such file or directory
+```
+
+If we write the outputs into a file, this error message will not be written.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.out
+$cat head.out
+```
+
+It will print:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
+```
+
+-   STDERR
+
+But if we specify its file descriptor to 2 (STDERR)
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile 2> head.err
+$cat head.err
+```
+
+It will print:
+
+```
+head: cannot open ‘fakefile’ for reading: No such file or directory
+```
+
+We can merge make this operation a bit fancy. I.e. using STDOUT and STDERR in one command:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.out 2> head.err
+```
+
+Or you can append error messages by using `2>>`
+
+Another common feature is to merge STDOUT and STDERR together:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile > head.both 2>&1
+```
+
+which is equivalent to the shorter statement below:
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile &> head.both
+```
+
+Run `cat -n` to print it with number of lines.
+
+```shell
+$cat -n head.both
+```
+
+It will print:
+
+```
+     1	==> /etc/passwd <==
+     2	root:x:0:0:root:/root:/bin/bash
+     3
+     4	==> /etc/hosts <==
+     5	127.0.0.1	testbox01	testbox01
+     6	head: cannot open ‘fakefile’ for reading: No such file or directory
+```
+
+In pine, STDERR cannot be passed directly, you have convert it to STDOUT at first. Both STDOUT and STDERR go through the pine. E.g.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile 2>&1 | cat
+```
+
+It is equivalent to another statement
+
+```shell
+$head -n1 /etc/passwd /etc/hosts fakefile |& cat
+```
+
+Formula: `STATEMENT1 TYPE> STATEMENT2`
+Formula: `STATEMENT1 TYPE>> STATEMENT2`
+
+> STATEMENT1: a statement that will through info  
+> TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`; Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`  
+> `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the next line.  
+> STATEMENT2: Somewhere to keep outputs or `cat` statement to show on screen.
+
+```
+┌─────────────────────────────────┐
+│ Standard Input / Output / Error │
+├─────────────────────────────────┴──────────────────────────────────────┐
+│ > 0: STDIN                                                             │
+│   1: STDOUT                                                            │
+│   2: STDERR                                                            │
+│                                                                        │
+│ > STDIN:                                                               │
+│   $read x 0< /etc/centos-release                                       │
+│   = $read x < /etc/centos-release                                      │
+├────────────────────────────────────────────────────────────────────────┤
+│ > Formula: `STATEMENT1 TYPE> STATEMENT2`                               │
+│   > STATEMENT1: a statement that will through info                     │
+│   > TYPE: STDOUT is `1>` or `>`; STDERR is `2>`; Both is `&>`;         │
+│     Convert STDOUT to STDERR by using `1>&2`, the converse is `2>&1`   │
+│   > `>` vs. `>>`: `>` is to overwrite whereas `>>` is to append to the │
+│      next line.                                                        │
+│   > STATEMENT2: Somewhere to keep outputs or `cat` statement to show   │
+│     on screen.                                                         │
+│                                                                        │
+│ > STDOUT:                                                              │
+│   > No STDERR                                                          │
+│     $head -n1 /etc/passwd /etc/hosts fakefile > head.both              │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile 1> head.both           │
+│   > Combine STDERR                                                     │
+│     $head -n1 /etc/passwd /etc/hosts fakefile &> head.both             │
+│   > Send STDOUT to STDERR                                              │
+│     $echo 'error' 1>&2 | cat -n                                        │
+│     = $echo 'error' >&2 | cat -n                                       │
+│   > Hide STDOUT                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 1> /dev/null             │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile > /dev/null            │
+│                                                                        │
+│ > STDERR:                                                              │
+│   > STDERR Only                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2> head.err              │
+│   > Send STDERR to STDOUT (In pine, STDERR cannot be passed directly)  │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2>&1 | cat               │
+│     = $head -n1 /etc/passwd /etc/hosts fakefile |& cat                 │
+│   > Hide STDERR                                                        │
+│     $head -n1 /etc/passwd /etc/hosts fakefile 2> /dev/null             │
+│   > Hide STDOUT and STDERR                                             │
+│     $head -n1 /etc/passwd /etc/hosts fakefile &> /dev/null             │
+└────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Checksum
@@ -598,6 +888,22 @@ $head -c3 FILE_NAME
 
 ```shell
 $echo 12345678 | head -c5
+```
+
+4. Another feature of `head` command is to read multiple files. E.g.
+
+```shell
+$head -n1 /etc/passwd /etc/hosts
+```
+
+And you will get:
+
+```
+==> /etc/passwd <==
+root:x:0:0:root:/root:/bin/bash
+
+==> /etc/hosts <==
+127.0.0.1	testbox01	testbox01
 ```
 
 ### Stream manipulation
@@ -829,7 +1135,7 @@ done
 
 `while` + `shift`
 
-1. Create a script [test1_7.sh]
+1. Create a script test.sh
 
 ```shell
 while [[ "${#}" -gt 0 ]]
@@ -845,7 +1151,7 @@ done
 
 > `-gt`: great then
 
-2. Run `./test1_7.sh A B C`, and then you will get
+2. Run `./test.sh A B C`, and then you will get
 
 ```
 Number of parameters: 3
@@ -913,7 +1219,7 @@ fi
 -   create a new user
 
 ```shell
-$sudo useradd -c dougstamper -m stamper
+$sudo useradd -c leonardo-da-vinci -m da-vinci
 ```
 
 > -c, --comment COMMENT
@@ -931,20 +1237,30 @@ $sudo useradd -c dougstamper -m stamper
 
 -   Set the password
 
+Using `echo`
+
 ```shell
-$sudo echo 123456 | passwd  --stdin stamper
+$sudo echo 123456 | passwd  --stdin da-vinci
+```
+
+Or using STDIN
+
+```shell
+# Create a password file
+echo "123456" > secret
+passwd --stdin da-vinci < secret
 ```
 
 -   Expire a password for an account. The user will be forced to change the password during the next login attempt.
 
 ```shell
-$sudo passwd -e stamper
+$sudo passwd -e da-vinci
 ```
 
--   Switch to stamper, the user we just created
+-   Switch to da-vinci, the user we just created
 
 ```shell
-$su - stamper
+$su - da-vinci
 ```
 
 -   Logout
@@ -962,10 +1278,34 @@ The script to create a user: [add_local_user.sh]
 
 ### Create local users with random passwords
 
+-   The script allow you to:
+
+    1. Create local user
+    2. Generate a random password for local user
+    3. Return exit status and log
+    4. Print username(s) and password(s) on console
+
 -   Demo: [add_local_users.sh]
 
 ```shell
 $./add_local_users.sh Kent David Emma
+```
+
+### Create local users with random passwords and keep STDOUT and STDERR to a log file.
+
+-   The script allow you to:
+
+    1. Create local user
+    2. Generate a random password for local user
+    3. Return exit status (0: Success; 1: failure + STDERR)
+    4. Keep log to a `log.txt` file
+    5. Hide STDOUT of statements, and keep STDERR to the log file
+    6. Print username(s) and password(s) on console
+
+-   Demo: [add_local_users_prod.sh]
+
+```shell
+$./add_local_users_prod.sh Kent David Emma
 ```
 
 [add_local_user.sh]: add_local_user.sh
@@ -973,4 +1313,3 @@ $./add_local_users.sh Kent David Emma
 [test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
 [password_generator.sh]: password_generator.sh
 [test1_6.sh]: test1_6.sh
-[test1_7.sh]: test1_7.sh
