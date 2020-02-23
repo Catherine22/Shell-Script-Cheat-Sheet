@@ -1320,5 +1320,5 @@ $./add_local_users_prod.sh Kent David Emma
 [test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
 [password_generator.sh]: password_generator.sh
 [test1_6.sh]: test1_6.sh
-[add_local_users_prod.sh]: add_local_users_prod
+[add_local_users_prod.sh]: add_local_users_prod.sh
 [linux shell scripting: a project-based approach to learning]: https://www.udemy.com/course/linux-shell-scripting-projects/
