@@ -1311,13 +1311,14 @@ $./add_local_users.sh Kent David Emma
 $./add_local_users_prod.sh Kent David Emma
 ```
 
+## Reference
+
+[Linux Shell Scripting: A Project-Based Approach to Learning]
+
 [add_local_user.sh]: add_local_user.sh
 [add_local_users.sh]: add_local_users.sh
 [test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
 [password_generator.sh]: password_generator.sh
 [test1_6.sh]: test1_6.sh
-[add_local_users_prod]: add_local_users_prod
-
-## Reference
-
-[Linux Shell Scripting: A Project-Based Approach to Learning](https://www.udemy.com/course/linux-shell-scripting-projects/)
+[add_local_users_prod.sh]: add_local_users_prod
+[linux shell scripting: a project-based approach to learning]: https://www.udemy.com/course/linux-shell-scripting-projects/
