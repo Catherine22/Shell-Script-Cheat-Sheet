@@ -33,6 +33,9 @@
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
         -   [Create local users with random passwords](#create-local-users-with-random-passwords)
+        -   [Create local users with random passwords and keep STDOUT and STDERR to a log file](#create-local-users-with-random-passwords-and-keep-stdout-and-stderr-to-a-log-file)
+
+    -   [Reference](#reference)
 
 ## Prerequisites
 
@@ -1291,7 +1294,7 @@ The script to create a user: [add_local_user.sh]
 $./add_local_users.sh Kent David Emma
 ```
 
-### Create local users with random passwords and keep STDOUT and STDERR to a log file.
+### Create local users with random passwords and keep STDOUT and STDERR to a log file
 
 -   The script allow you to:
 
@@ -1313,3 +1316,8 @@ $./add_local_users_prod.sh Kent David Emma
 [test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
 [password_generator.sh]: password_generator.sh
 [test1_6.sh]: test1_6.sh
+[add_local_users_prod]: add_local_users_prod
+
+## Reference
+
+[Linux Shell Scripting: A Project-Based Approach to Learning](https://www.udemy.com/course/linux-shell-scripting-projects/)
