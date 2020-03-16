@@ -9,9 +9,10 @@
     -   [Commands](#commands)
     -   [Permission](#permission)
     -   [echo](#echo)
-    -   [Special variables](#special-variables)
-    -   [If statement](#if-statement)
-    -   [Exit status](#exit-status)
+    -   [Special Variables](#special-variables)
+    -   [If Statement](#if-statement)
+    -   [Case Statement](#case-statement)
+    -   [Exit Status](#exit-status)
     -   [File Descriptors](#file-descriptors)
 
         -   [Standard Input](#standard-input)
@@ -301,7 +302,7 @@ echo "${LINE1}${LINE2}"
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Special variables
+### Special Variables
 
 Here are the list of special variables this tutorial mentioned:
 
@@ -382,7 +383,7 @@ and you run `./test.sh`, you will see `./test.sh`, but if you run this file by t
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### If statement
+### If Statement
 
 Rule 1
 
@@ -427,6 +428,86 @@ $if [[ 'a' -eq 'a' ]]
 │ else                                                                   │
 │    // do something                                                     │
 │ fi                                                                     │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Case Statement
+
+You may have code snippet like this:
+
+```shell
+#!/bin/bash
+
+if [[ "${1}" = 'attack' ]]
+then
+  echo 'slashing...'
+elif [[ "${1}" = 'move' ]]
+then
+  echo 'teleporting...'
+elif [[ "${1}" = 'bombardment' ]]
+then
+  echo 'letting out an arcane torrent...'
+elif [[ "${1}" = 'provoke' ]]
+then
+  echo 'transforming your skin to diamond...'
+else
+  echo 'No idea' >&2 # STDERR
+  exit 1 # fail
+fi
+```
+
+And you type:
+
+```shell
+$./test.sh provoke
+# transforming your skin to diamond...
+
+$./test.sh sneak
+# no idea
+$ echo $?
+# 1 (from exit status)
+```
+
+You can update your to `case` version
+
+```shell
+#!/bin/bash
+
+case "${1}" in
+  attack)
+    echo 'slashing...'
+    ;;
+  move)
+    echo 'teleporting...'
+    ;;
+  bombardment)
+    echo 'letting out an arcane torrent...'
+    ;;
+  provoke)
+    echo 'transforming your skin to diamond...'
+    ;;
+  *)
+    echo 'No idea' >&2 # STDERR
+    exit 1 # fail
+    ;;
+esac
+```
+
+```
+┌──────┐
+│ case │
+├──────┴─────────────────────────────────────────────────────────────────┐
+│ case condition in                                                      │
+│   variable1)                                                           │
+│     // do something                                                    │
+|    ;;                                                                  │
+│   variable2)                                                           │
+│     // do something                                                    │
+|    ;;                                                                  │
+│   *)                                                                   │
+│    // do something                                                     │
+|    ;;                                                                  │
+│ esac                                                                   │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
