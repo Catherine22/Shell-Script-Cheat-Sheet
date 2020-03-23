@@ -438,16 +438,16 @@ You may have code snippet like this:
 ```shell
 #!/bin/bash
 
-if [[ "${1}" = 'attack' ]]
+if [[ "${1}" = '-attack' ]] || [[ "${1}" = '--a' ]]
 then
   echo 'slashing...'
-elif [[ "${1}" = 'move' ]]
+elif [[ "${1}" = '-move' ]] || [[ "${1}" = '--m' ]]
 then
   echo 'teleporting...'
-elif [[ "${1}" = 'bombardment' ]]
+elif [[ "${1}" = '-bombardment' ]] || [[ "${1}" = '--b' ]]
 then
   echo 'letting out an arcane torrent...'
-elif [[ "${1}" = 'provoke' ]]
+elif [[ "${1}" = '-provoke' ]] || [[ "${1}" = '--p' ]] || [[ "${1}" = '-shout' ]] || [[ "${1}" = '--s' ]]
 then
   echo 'transforming your skin to diamond...'
 else
@@ -459,10 +459,10 @@ fi
 And you type:
 
 ```shell
-$./test.sh provoke
+$./test.sh --p
 # transforming your skin to diamond...
 
-$./test.sh sneak
+$./test.sh -sneak
 # no idea
 $ echo $?
 # 1 (from exit status)
@@ -474,16 +474,16 @@ You can update your to `case` version
 #!/bin/bash
 
 case "${1}" in
-  attack)
+  -attack|--a)
     echo 'slashing...'
     ;;
-  move)
+  -move|--m)
     echo 'teleporting...'
     ;;
-  bombardment)
+  -bombardment|--b)
     echo 'letting out an arcane torrent...'
     ;;
-  provoke)
+  -provoke|--p|-shout|--s)
     echo 'transforming your skin to diamond...'
     ;;
   *)
