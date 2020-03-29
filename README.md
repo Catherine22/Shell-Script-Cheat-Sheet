@@ -10,6 +10,7 @@
     -   [Permission](#permission)
     -   [echo](#echo)
     -   [Special Variables](#special-variables)
+    -   [Constants](#constants)
     -   [If Statement](#if-statement)
     -   [Case Statement](#case-statement)
     -   [Exit Status](#exit-status)
@@ -19,6 +20,7 @@
         -   [Standard Output](#standard-output)
         -   [Standard Error](#standard-error)
 
+    -   [Logger](#logger)
     -   [Checksum](#checksum)
     -   [Random](#random)
     -   [Head](#head)
@@ -28,6 +30,7 @@
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
     -   [Loop](#Loop)
+    -   [Function](#function)
     -   [Use Cases](#use-cases)
 
         -   [Check if I am root](#check-if-i-am-root)
@@ -381,6 +384,13 @@ and you run `./test.sh`, you will see `./test.sh`, but if you run this file by t
 │1. Define a code snippet with $(YOUR_COMMAND) or  `YOUR_COMMAND`        │
 │2. Single quotes for value, double quotes for variable                  │
 └────────────────────────────────────────────────────────────────────────┘
+```
+
+### Constants
+
+```shell
+readonly PI='3.14'
+echo "${PI}"
 ```
 
 ### If Statement
@@ -895,6 +905,38 @@ Formula: `STATEMENT1 TYPE>> STATEMENT2`
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Logger
+
+Log something
+
+```shell
+$logger 'hello from vagrant user'
+```
+
+Print all logs
+
+```shell
+$sudo tail /var/log/messages
+```
+
+You will see messages below:
+
+```
+Mar 28 21:58:01 testbox01 vagrant: hello from vagrant user
+```
+
+You can tag on your messages by using `-t`
+
+```shell
+$logger -t Doris "Dinner's ready"
+```
+
+Again, this time you will see
+
+```shell
+Mar 28 21:59:09 testbox01 Doris: Dinner's ready
+```
+
 ### Checksum
 
 List all available checksum methods
@@ -1283,6 +1325,56 @@ Param 3:
 │     # do something                                                     │
 │   done                                                                 │
 └────────────────────────────────────────────────────────────────────────┘
+```
+
+### Function
+
+-   Two ways to define a function without arguments
+
+```shell
+#!/bin/bash
+
+f1() {
+    echo 'running f1()'
+}
+
+function f2 {
+    echo 'running f2()'
+}
+
+f1
+f2
+```
+
+-   Functions with arguments
+
+```shell
+f3() {
+    # The `local` command can only be used inside of a function
+    local ARGS="${@}"
+    echo "${ARGS} from f3()"
+}
+
+f3 'a' 'b' # You will get a b from f3()
+```
+
+-   Using global variable to control the flow of a function
+
+```shell
+# This is how shell script define a constant
+readonly VERBOSE='true'
+log() {
+    if [[ "${VERBOSE}" = 'true' ]]
+    then
+        # The `local` command can only be used inside of a function
+        local MESSAGES="${@}"
+        echo "${MESSAGES} from log()"
+    fi
+    # To see your log, run: sudo tail /var/log/messages
+    logger -t my_app "${MESSAGES}"
+}
+
+log 'exception: 404 not found'
 ```
 
 ### Use Cases
