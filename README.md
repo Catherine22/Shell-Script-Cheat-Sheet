@@ -1329,6 +1329,8 @@ Param 3:
 
 ### Function
 
+Functions need to be defined before they are used.
+
 -   Two ways to define a function without arguments
 
 ```shell
@@ -1355,7 +1357,7 @@ f3() {
     echo "${ARGS} from f3()"
 }
 
-f3 'a' 'b' # You will get a b from f3()
+f3 'a' 'b'
 ```
 
 -   Using global variable to control the flow of a function
@@ -1482,6 +1484,51 @@ $./add_local_users.sh Kent David Emma
 
 ```shell
 $./add_local_users_prod.sh Kent David Emma
+```
+
+### Back up files
+
+-   Back up `/etc/passwd` file
+-   Define a function to create a backup for files.
+-   Log message by using system logger
+-   Notice, files in `/var/tmp/` deleted every 10 days whereas files in `/var/` deleted every 30 days.
+
+```shell
+#!/bin/bash
+
+readonly VERBOSE='true'
+log() {
+    if [[ "${VERBOSE}" = 'true' ]]
+    then
+        # The `local` command can only be used inside of a function
+        local MESSAGES="${@}"
+        echo "${MESSAGES} from log()"
+    fi
+    # To see your log, run: sudo tail /var/log/messages
+    logger -t my_app "${MESSAGES}"
+}
+
+backup_file() {
+    local FILE="${1}"
+
+    if [[ -f "${FILE}" ]]
+    then
+        local BACKUP="/var/tmp/$(basename ${FILE}).$(date +%F-%N)"
+        log "Backing up ${FILE} to ${BACKUP}."
+
+        # The exit status of the function will be the exit status of the cp command
+        cp -p ${FILE} ${BACKUP}
+    else
+        # The file doesn't exist, return a non-zero status
+        return 1
+    fi
+}
+
+backup_file '/etc/passwd'
+
+# It will print on terminal: Backing up /etc/passwd to /var/tmp/passwd.2020-03-29-279478030. from log()
+# You can see the log by running: sudo tail /var/tmp/messages
+# Your backup will be in /var/tmp/passwd.2020-03-29-279478030
 ```
 
 ## Reference
