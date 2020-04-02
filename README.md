@@ -1516,7 +1516,7 @@ backup_file() {
         local BACKUP="/var/tmp/$(basename ${FILE}).$(date +%F-%N)"
         log "Backing up ${FILE} to ${BACKUP}."
 
-        # The exit status of the function will be the exit status of the cp command
+        # The exit status of the function will be the exit status of the cp -p command
         cp -p ${FILE} ${BACKUP}
     else
         # The file doesn't exist, return a non-zero status
@@ -1526,10 +1526,29 @@ backup_file() {
 
 backup_file '/etc/passwd'
 
+if [[ "${?}" -eq '0' ]]
+then
+    log 'File backup succeeded'
+else
+    log 'File backup failed'
+    exit 1
+fi
+
 # It will print on terminal: Backing up /etc/passwd to /var/tmp/passwd.2020-03-29-279478030. from log()
 # You can see the log by running: sudo tail /var/tmp/messages
 # Your backup will be in /var/tmp/passwd.2020-03-29-279478030
 ```
+
+> The difference between `cp` and `cp -p`, for example:  
+> If you type `ls -l /etc/passwd`, you will see  
+> `-rw-r--r-- 1 root root 1184 Feb 23 00:43 /etc/passwd`  
+> Copy the passwd file and paste it into /tmp/ folder  
+> `cp /etc/passwd /var/tmp/`  
+> The date of your passwd file will be when you paste it into.  
+> `-rw-r--r-- 1 vagrant vagrant 1184 Apr 2 01:23 passwd`  
+> Therefore, to fix this issue, you need to add `-p` to make sure the date of your copy will be exactly the same.
+> `cp -p /etc/passwd /var/tmp/`  
+> `-rw-r--r-- 1 vagrant vagrant 1184 Feb 23 00:43 passwd`
 
 ## Reference
 
