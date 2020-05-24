@@ -33,6 +33,9 @@
     -   [Loop](#Loop)
     -   [Function](#function)
     -   [getopts](#getopts)
+    -   [Math](#math)
+        -   [bc](#bc)
+        -   [awk](#awk)
     -   [Use Cases](#use-cases)
 
         -   [Check if I am root](#check-if-i-am-root)
@@ -1399,6 +1402,83 @@ log 'exception: 404 not found'
 `getopts` parses command line arguments.
 
 Demo: [password_generator.sh]
+
+### Math
+
+To calculate a number and assign it as a variable, you will need:
+
+```shell
+$NUM=$(( 6 / 4 ))
+```
+
+If you print it, you will get 1, and which is not correct
+
+```shell
+$echo ${NUM}
+```
+
+If you need to calculate, you will need to install another program such as `bc`
+
+```shell
+$sudo yum install -y bc
+```
+
+```shell
+$bc -h
+```
+
+Update a number in another statement.
+
+```shell
+$NUM='2'
+$(( NUM++ ))
+$echo ${NUM} # NUM = 3
+$NUM=$(( NUM +=5 ))
+$echo ${NUM} # NUM = 8
+```
+
+#### let
+
+```shell
+$let NUM='2 + 3'
+$echo ${NUM} # NUM = 5
+```
+
+```shell
+$let NUM++ # NUM = 6
+```
+
+#### expr
+
+```shell
+$expr 6 / 4 # 1
+```
+
+```shell
+$NUM=$(expr 1 + 1) # NUM = 2
+```
+
+#### bc
+
+Allow floating calculation in bc, you will need to add `-l`
+
+```shell
+$bc -l
+```
+
+-   bc reads standard input, and to calculate floating numbers, you will need `-l` option
+
+```shell
+$echo '6 / 4' | bc -l
+```
+
+#### awk
+
+Another way to calculate floating numbers
+
+```shell
+$awk "BEGIN {print 6/4}"
+```
 
 ### Use Cases
 
