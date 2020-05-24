@@ -29,8 +29,10 @@
     -   [Path](#path)
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
+    -   [Input options](#input-options)
     -   [Loop](#Loop)
     -   [Function](#function)
+    -   [getopts](#getopts)
     -   [Use Cases](#use-cases)
 
         -   [Check if I am root](#check-if-i-am-root)
@@ -1124,20 +1126,20 @@ And you can print each line of the character by using `head`
 
 ### Path
 
-E.g. I have a file in /vagrant/localusers/[test1_6.sh]
+E.g. I have a file in /vagrant/localusers/test_path.sh
 
 1. `basename`: Get the file name (removed the directory)
 
 ```shell
-$basename /vagrant/localusers/test1_6.sh
+$basename /vagrant/localusers/test_path.sh
 ```
 
-It returns `test1_6.sh`
+It returns `test_path.sh`
 
 2. `dirname`: Get the path of a file (except the file itself)
 
 ```shell
-$dirname /vagrant/localusers/test1_6.sh
+$dirname /vagrant/localusers/test_path.sh
 ```
 
 It returns `/vagrant/localusers`
@@ -1234,6 +1236,19 @@ Parameter 3: C
 ```
 
 You will lose rest of the arguments. In order to get all arguments, you need a for-loop or while-loop.
+
+### Input options
+
+Three ways to handle user inputs:
+
+1. `read`: Pause the process and ask for inputs
+2. input arguments: User types arguments while executing the shell script
+3. input options: User types arguments while executing the shell script
+
+The difference between input arguments and input options is the syntax user inputs. E.g.
+
+A command with arguments will be like `./test.sh arg1 arg2`  
+On the other hands, a comment with options will be like `./test.sh -v -i`
 
 ### Loop
 
@@ -1379,6 +1394,12 @@ log() {
 log 'exception: 404 not found'
 ```
 
+### getopts
+
+`getopts` parses command line arguments.
+
+Demo: [password_generator.sh]
+
 ### Use Cases
 
 #### Check if I am root
@@ -1451,7 +1472,7 @@ The script to create a user: [add_local_user.sh]
 
 ### Password Generator
 
--   Rule of thumb: [test1_5_pwd_generator.sh]
+-   Rule of thumb: [pwd_generator_guideline.sh]
 -   Demo: [password_generator.sh]
 
 ### Create local users with random passwords
@@ -1556,8 +1577,7 @@ fi
 
 [add_local_user.sh]: add_local_user.sh
 [add_local_users.sh]: add_local_users.sh
-[test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
+[pwd_generator_guideline.sh]: pwd_generator_guideline.sh
 [password_generator.sh]: password_generator.sh
-[test1_6.sh]: test1_6.sh
 [add_local_users_prod.sh]: add_local_users_prod.sh
 [linux shell scripting: a project-based approach to learning]: https://www.udemy.com/course/linux-shell-scripting-projects/
