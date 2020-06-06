@@ -9,15 +9,18 @@
     -   [Commands](#commands)
     -   [Permission](#permission)
     -   [echo](#echo)
-    -   [Special variables](#special-variables)
-    -   [If statement](#if-statement)
-    -   [Exit status](#exit-status)
+    -   [Special Variables](#special-variables)
+    -   [Constants](#constants)
+    -   [If Statement](#if-statement)
+    -   [Case Statement](#case-statement)
+    -   [Exit Status](#exit-status)
     -   [File Descriptors](#file-descriptors)
 
         -   [Standard Input](#standard-input)
         -   [Standard Output](#standard-output)
         -   [Standard Error](#standard-error)
 
+    -   [Logger](#logger)
     -   [Checksum](#checksum)
     -   [Random](#random)
     -   [Head](#head)
@@ -26,7 +29,14 @@
     -   [Path](#path)
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
+    -   [Input options](#input-options)
     -   [Loop](#Loop)
+    -   [Function](#function)
+    -   [getopts](#getopts)
+    -   [optind](#optind)
+    -   [Math](#math)
+        -   [bc](#bc)
+        -   [awk](#awk)
     -   [Use Cases](#use-cases)
 
         -   [Check if I am root](#check-if-i-am-root)
@@ -301,7 +311,7 @@ echo "${LINE1}${LINE2}"
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Special variables
+### Special Variables
 
 Here are the list of special variables this tutorial mentioned:
 
@@ -382,7 +392,14 @@ and you run `./test.sh`, you will see `./test.sh`, but if you run this file by t
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### If statement
+### Constants
+
+```shell
+readonly PI='3.14'
+echo "${PI}"
+```
+
+### If Statement
 
 Rule 1
 
@@ -427,6 +444,90 @@ $if [[ 'a' -eq 'a' ]]
 │ else                                                                   │
 │    // do something                                                     │
 │ fi                                                                     │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+### Case Statement
+
+You may have code snippet like this:
+
+```shell
+#!/bin/bash
+
+if [[ "${1}" = '-attack' ]] || [[ "${1}" = '--a' ]]
+then
+  echo 'slashing...'
+elif [[ "${1}" = '-move' ]] || [[ "${1}" = '--m' ]]
+then
+  echo 'teleporting...'
+elif [[ "${1}" = '-bombardment' ]] || [[ "${1}" = '--b' ]]
+then
+  echo 'letting out an arcane torrent...'
+elif [[ "${1}" = '-provoke' ]] || [[ "${1}" = '--p' ]] || [[ "${1}" = '-shout' ]] || [[ "${1}" = '--s' ]]
+then
+  echo 'transforming your skin to diamond...'
+else
+  echo 'No idea' >&2 # STDERR
+  exit 1 # fail
+fi
+```
+
+And you type:
+
+```shell
+$./test.sh --p
+# transforming your skin to diamond...
+
+$./test.sh -sneak
+# no idea
+$ echo $?
+# 1 (from exit status)
+```
+
+You can update your to `case` version
+
+```shell
+#!/bin/bash
+
+case "${1}" in
+  -attack|--a)
+    echo 'slashing...'
+    ;;
+  -move|--m)
+    echo 'teleporting...'
+    ;;
+  -bombardment|--b)
+    echo 'letting out an arcane torrent...'
+    ;;
+  -provoke|--p|-shout|--s)
+    echo 'transforming your skin to diamond...'
+    ;;
+  *)
+    echo 'No idea' >&2 # STDERR
+    exit 1 # fail
+    ;;
+esac
+```
+
+With [OPTIND](#optind), you can easily handle invalid arguments.
+
+```
+┌──────┐
+│ case │
+├──────┴─────────────────────────────────────────────────────────────────┐
+│ case condition in                                                      │
+│   variable1)                                                           │
+│     // do something                                                    │
+|    ;;                                                                  │
+│   variable2)                                                           │
+│     // do something                                                    │
+|    ;;                                                                  │
+│   *)                                                                   │
+│    // do something                                                     │
+|    ;;                                                                  │
+│ esac                                                                   │
+│                                                                        │
+│ Argument validation: OPTIND                                            │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -814,6 +915,38 @@ Formula: `STATEMENT1 TYPE>> STATEMENT2`
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Logger
+
+Log something
+
+```shell
+$logger 'hello from vagrant user'
+```
+
+Print all logs
+
+```shell
+$sudo tail /var/log/messages
+```
+
+You will see messages below:
+
+```
+Mar 28 21:58:01 testbox01 vagrant: hello from vagrant user
+```
+
+You can tag on your messages by using `-t`
+
+```shell
+$logger -t Doris "Dinner's ready"
+```
+
+Again, this time you will see
+
+```shell
+Mar 28 21:59:09 testbox01 Doris: Dinner's ready
+```
+
 ### Checksum
 
 List all available checksum methods
@@ -1001,20 +1134,20 @@ And you can print each line of the character by using `head`
 
 ### Path
 
-E.g. I have a file in /vagrant/localusers/[test1_6.sh]
+E.g. I have a file in /vagrant/localusers/test_path.sh
 
 1. `basename`: Get the file name (removed the directory)
 
 ```shell
-$basename /vagrant/localusers/test1_6.sh
+$basename /vagrant/localusers/test_path.sh
 ```
 
-It returns `test1_6.sh`
+It returns `test_path.sh`
 
 2. `dirname`: Get the path of a file (except the file itself)
 
 ```shell
-$dirname /vagrant/localusers/test1_6.sh
+$dirname /vagrant/localusers/test_path.sh
 ```
 
 It returns `/vagrant/localusers`
@@ -1112,6 +1245,19 @@ Parameter 3: C
 
 You will lose rest of the arguments. In order to get all arguments, you need a for-loop or while-loop.
 
+### Input options
+
+Three ways to handle user inputs:
+
+1. `read`: Pause the process and ask for inputs
+2. input arguments: User types arguments while executing the shell script
+3. input options: User types arguments while executing the shell script
+
+The difference between input arguments and input options is the syntax user inputs. E.g.
+
+A command with arguments will be like `./test.sh arg1 arg2`  
+On the other hands, a comment with options will be like `./test.sh -v -i`
+
 ### Loop
 
 #### For-loop
@@ -1204,6 +1350,147 @@ Param 3:
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
+### Function
+
+Functions need to be defined before they are used.
+
+-   Two ways to define a function without arguments
+
+```shell
+#!/bin/bash
+
+f1() {
+    echo 'running f1()'
+}
+
+function f2 {
+    echo 'running f2()'
+}
+
+f1
+f2
+```
+
+-   Functions with arguments
+
+```shell
+f3() {
+    # The `local` command can only be used inside of a function
+    local ARGS="${@}"
+    echo "${ARGS} from f3()"
+}
+
+f3 'a' 'b'
+```
+
+-   Using global variable to control the flow of a function
+
+```shell
+# This is how shell script define a constant
+readonly VERBOSE='true'
+log() {
+    if [[ "${VERBOSE}" = 'true' ]]
+    then
+        # The `local` command can only be used inside of a function
+        local MESSAGES="${@}"
+        echo "${MESSAGES} from log()"
+    fi
+    # To see your log, run: sudo tail /var/log/messages
+    logger -t my_app "${MESSAGES}"
+}
+
+log 'exception: 404 not found'
+```
+
+### getopts
+
+`getopts` parses command line arguments.
+
+Demo: [password_generator.sh]
+
+### optind
+
+The variable `optind` is the index of the next element to be processed in argv.
+
+Demo: [password_generator.sh]
+
+### Math
+
+To calculate a number and assign it as a variable, you will need:
+
+```shell
+$NUM=$(( 6 / 4 ))
+```
+
+If you print it, you will get 1, and which is not correct
+
+```shell
+$echo ${NUM}
+```
+
+If you need to calculate, you will need to install another program such as `bc`
+
+```shell
+$sudo yum install -y bc
+```
+
+```shell
+$bc -h
+```
+
+Update a number in another statement.
+
+```shell
+$NUM='2'
+$(( NUM++ ))
+$echo ${NUM} # NUM = 3
+$NUM=$(( NUM +=5 ))
+$echo ${NUM} # NUM = 8
+```
+
+#### let
+
+```shell
+$let NUM='2 + 3'
+$echo ${NUM} # NUM = 5
+```
+
+```shell
+$let NUM++ # NUM = 6
+```
+
+#### expr
+
+```shell
+$expr 6 / 4 # 1
+```
+
+```shell
+$NUM=$(expr 1 + 1) # NUM = 2
+```
+
+#### bc
+
+Allow floating calculation in bc, you will need to add `-l`
+
+```shell
+$bc -l
+```
+
+-   bc reads standard input, and to calculate floating numbers, you will need `-l` option
+
+```shell
+$echo '6 / 4' | bc -l
+```
+
+#### awk
+
+Another way to calculate floating numbers
+
+```shell
+$awk "BEGIN {print 6/4}"
+```
+
 ### Use Cases
 
 #### Check if I am root
@@ -1276,7 +1563,7 @@ The script to create a user: [add_local_user.sh]
 
 ### Password Generator
 
--   Rule of thumb: [test1_5_pwd_generator.sh]
+-   Rule of thumb: [pwd_generator_guideline.sh]
 -   Demo: [password_generator.sh]
 
 ### Create local users with random passwords
@@ -1311,14 +1598,77 @@ $./add_local_users.sh Kent David Emma
 $./add_local_users_prod.sh Kent David Emma
 ```
 
+### Back up files
+
+-   Back up `/etc/passwd` file
+-   Define a function to create a backup for files.
+-   Log message by using system logger
+-   Notice, files in `/var/tmp/` deleted every 10 days whereas files in `/var/` deleted every 30 days.
+
+```shell
+#!/bin/bash
+
+readonly VERBOSE='true'
+log() {
+    if [[ "${VERBOSE}" = 'true' ]]
+    then
+        # The `local` command can only be used inside of a function
+        local MESSAGES="${@}"
+        echo "${MESSAGES} from log()"
+    fi
+    # To see your log, run: sudo tail /var/log/messages
+    logger -t my_app "${MESSAGES}"
+}
+
+backup_file() {
+    local FILE="${1}"
+
+    if [[ -f "${FILE}" ]]
+    then
+        local BACKUP="/var/tmp/$(basename ${FILE}).$(date +%F-%N)"
+        log "Backing up ${FILE} to ${BACKUP}."
+
+        # The exit status of the function will be the exit status of the cp -p command
+        cp -p ${FILE} ${BACKUP}
+    else
+        # The file doesn't exist, return a non-zero status
+        return 1
+    fi
+}
+
+backup_file '/etc/passwd'
+
+if [[ "${?}" -eq '0' ]]
+then
+    log 'File backup succeeded'
+else
+    log 'File backup failed'
+    exit 1
+fi
+
+# It will print on terminal: Backing up /etc/passwd to /var/tmp/passwd.2020-03-29-279478030. from log()
+# You can see the log by running: sudo tail /var/tmp/messages
+# Your backup will be in /var/tmp/passwd.2020-03-29-279478030
+```
+
+> The difference between `cp` and `cp -p`, for example:  
+> If you type `ls -l /etc/passwd`, you will see  
+> `-rw-r--r-- 1 root root 1184 Feb 23 00:43 /etc/passwd`  
+> Copy the passwd file and paste it into /tmp/ folder  
+> `cp /etc/passwd /var/tmp/`  
+> The date of your passwd file will be when you paste it into.  
+> `-rw-r--r-- 1 vagrant vagrant 1184 Apr 2 01:23 passwd`  
+> Therefore, to fix this issue, you need to add `-p` to make sure the date of your copy will be exactly the same.
+> `cp -p /etc/passwd /var/tmp/`  
+> `-rw-r--r-- 1 vagrant vagrant 1184 Feb 23 00:43 passwd`
+
 ## Reference
 
 [Linux Shell Scripting: A Project-Based Approach to Learning]
 
 [add_local_user.sh]: add_local_user.sh
 [add_local_users.sh]: add_local_users.sh
-[test1_5_pwd_generator.sh]: test1_5_pwd_generator.sh
+[pwd_generator_guideline.sh]: pwd_generator_guideline.sh
 [password_generator.sh]: password_generator.sh
-[test1_6.sh]: test1_6.sh
 [add_local_users_prod.sh]: add_local_users_prod.sh
 [linux shell scripting: a project-based approach to learning]: https://www.udemy.com/course/linux-shell-scripting-projects/
