@@ -50,6 +50,16 @@ do
     esac
 done
 
+log "Number of args: [${#}]"
+log "All args: [${@}]"
+
+## Remove the options while remaining arguments
+shift "$(( OPTIND - 1 ))"
+if [[ "${#}" -gt 0 ]]
+then
+    usage
+fi
+
 log '> Generating a password...'
 
 if [[ "${USE_SPECIAL_CHARACTERS}" = 'true' ]]

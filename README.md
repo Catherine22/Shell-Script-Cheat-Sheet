@@ -33,6 +33,7 @@
     -   [Loop](#Loop)
     -   [Function](#function)
     -   [getopts](#getopts)
+    -   [optind](#optind)
     -   [Math](#math)
         -   [bc](#bc)
         -   [awk](#awk)
@@ -508,6 +509,8 @@ case "${1}" in
 esac
 ```
 
+With [OPTIND](#optind), you can easily handle invalid arguments.
+
 ```
 ┌──────┐
 │ case │
@@ -523,6 +526,8 @@ esac
 │    // do something                                                     │
 |    ;;                                                                  │
 │ esac                                                                   │
+│                                                                        │
+│ Argument validation: OPTIND                                            │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1400,6 +1405,12 @@ log 'exception: 404 not found'
 ### getopts
 
 `getopts` parses command line arguments.
+
+Demo: [password_generator.sh]
+
+### optind
+
+The variable `optind` is the index of the next element to be processed in argv.
 
 Demo: [password_generator.sh]
 
