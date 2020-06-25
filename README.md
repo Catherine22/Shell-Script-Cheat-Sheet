@@ -27,6 +27,7 @@
     -   [Stream manipulation](#stream-manipulation)
     -   [Fold](#fold)
     -   [Path](#path)
+        -   [Locate](#locate)
     -   [Create your very own command](#create-your-very-own-command)
     -   [Input arguments](#input-arguments)
     -   [Input options](#input-options)
@@ -37,6 +38,9 @@
     -   [Math](#math)
         -   [bc](#bc)
         -   [awk](#awk)
+    -   [Useful Tricks](#useful-tricks)
+        -   [Search for keywords](#search-for-keywords)
+        -   [Run the final command](#run-the-final-command)
     -   [Use Cases](#use-cases)
 
         -   [Check if I am root](#check-if-i-am-root)
@@ -201,6 +205,22 @@ $which head
 ```
 
 And you will see `/usr/bin/head`
+
+4. Another example is `userdel`, if you run
+
+```shell
+$type -a userdel
+```
+
+then you get
+
+```shell
+userdel is /usr/sbin/userdel
+userdel is /sbin/userdel
+userdel is /usr/sbin/userdel
+```
+
+You can use `which` command to check waht `userdel` you are using right now.
 
 ### Permission
 
@@ -1152,6 +1172,63 @@ $dirname /vagrant/localusers/test_path.sh
 
 It returns `/vagrant/localusers`
 
+#### Locate
+
+To find a command which is not in your path, you need `locate`, `install` and `configure`.  
+`locate` searches an index created by the `updatedb` command, which is typically scheduled to run once a day. Therefore, `locate` command does not have up-to-the-minute information.
+
+1. Locate `userdel` (You may be able to see more results by running `locate` with `sudo`)
+
+```shell
+$locate userdel
+```
+
+then you would get
+
+```shell
+/usr/sbin/luserdel
+/usr/sbin/userdel
+/usr/share/bash-completion/completions/userdel
+/usr/share/man/de/man8/userdel.8.gz
+/usr/share/man/fr/man8/userdel.8.gz
+/usr/share/man/it/man8/userdel.8.gz
+/usr/share/man/ja/man8/userdel.8.gz
+/usr/share/man/man1/luserdel.1.gz
+/usr/share/man/man8/userdel.8.gz
+/usr/share/man/pl/man8/userdel.8.gz
+/usr/share/man/ru/man8/userdel.8.gz
+/usr/share/man/sv/man8/userdel.8.gz
+/usr/share/man/tr/man8/userdel.8.gz
+/usr/share/man/zh_CN/man8/userdel.8.gz
+/usr/share/man/zh_TW/man8/userdel.8.gz
+```
+
+2. Create your own userdel
+
+```shell
+$touch userdel
+```
+
+If you run `locate userdel`, you won't see the `userdel` you placed.
+
+3. Scan the whole file directory to update the DB
+
+```shell
+$sudo updatedb
+```
+
+4. Locate `userdel` again, and this time, you will get the latest results.
+
+```shell
+$locate userdel
+```
+
+5. To narrow down the search results, you could user `| grep xxx` to print results with keywords `xxx`
+
+```shell
+$locate userdel | grep bin
+```
+
 ### Create your very own command
 
 To see where a command from, you can type `which`. E.g.
@@ -1489,6 +1566,32 @@ Another way to calculate floating numbers
 
 ```shell
 $awk "BEGIN {print 6/4}"
+```
+
+### Useful Tricks
+
+#### Search for keywords
+
+```shell
+$YOUR_COMMAND | grep KEYWORDS
+```
+
+E.g. To `locate` all password files (including root) placed in **system** directory
+
+```shell
+$sudo locate password | grep system
+```
+
+#### Run the final command
+
+```shell
+$!!
+```
+
+Or with `sudo`
+
+```shell
+$sudo !!
 ```
 
 ### Use Cases
