@@ -40,6 +40,7 @@
         -   [awk](#awk)
     -   [Useful Tricks](#useful-tricks)
         -   [Search for keywords](#search-for-keywords)
+        -   [Search for a file](#search-for-a-file)
         -   [Run the final command](#run-the-final-command)
     -   [Use Cases](#use-cases)
 
@@ -1581,6 +1582,20 @@ E.g. To `locate` all password files (including root) placed in **system** direct
 ```shell
 $sudo locate password | grep system
 ```
+
+#### Search for a file
+
+```shell
+$sudo find DIRECTORY -name FILE_NAME
+```
+
+E.g. To search for `userdel` under root directory
+
+```shell
+$sudo find / -name userdel
+```
+
+Without `sudo`, you will receive a lot of errors like `find: ‘/etc/dhcp’: Permission denied`. You could either ignore them by appending `2>/dev/null` or run with `sudo`.
 
 #### Run the final command
 
