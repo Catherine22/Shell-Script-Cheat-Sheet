@@ -1,11 +1,8 @@
 # Linux Shell Script Cheat Sheet
 
 -   [Prerequisites](#prerequisites)
-
     -   [Useful vagrant commands](#useful-vagrant-commands)
-
 -   [Shell script](#shell-script)
-
     -   [Commands](#commands)
     -   [Permission](#permission)
     -   [echo](#echo)
@@ -15,11 +12,9 @@
     -   [Case Statement](#case-statement)
     -   [Exit Status](#exit-status)
     -   [File Descriptors](#file-descriptors)
-
         -   [Standard Input](#standard-input)
         -   [Standard Output](#standard-output)
         -   [Standard Error](#standard-error)
-
     -   [Logger](#logger)
     -   [Checksum](#checksum)
     -   [Random](#random)
@@ -38,18 +33,21 @@
     -   [Math](#math)
         -   [bc](#bc)
         -   [awk](#awk)
+    -   [User](#user)
+        -   [How many users in my computer?](#how-many-users-in-my-computer)
+        -   [Who am I?](#who-am-i)
+        -   [Root](#root)
+        -   [Useful Commands](#useful-commands)
     -   [Useful Tricks](#useful-tricks)
         -   [Search for keywords](#search-for-keywords)
         -   [Search for a file](#search-for-a-file)
         -   [Run the final command](#run-the-final-command)
     -   [Use Cases](#use-cases)
-
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
         -   [Password Generator](#password-generator)
         -   [Create local users with random passwords](#create-local-users-with-random-passwords)
         -   [Create local users with random passwords and keep STDOUT and STDERR to a log file](#create-local-users-with-random-passwords-and-keep-stdout-and-stderr-to-a-log-file)
-
     -   [Reference](#reference)
 
 ## Prerequisites
@@ -1567,6 +1565,72 @@ Another way to calculate floating numbers
 
 ```shell
 $awk "BEGIN {print 6/4}"
+```
+
+### User
+
+#### How many users in my computer?
+
+To see how many users created in your machine, run
+
+```shell
+$cat /etc/passwd
+```
+
+Or to print the newest 10 users
+
+```shell
+$tail /etc/passwd
+```
+
+#### Who am I?
+
+To see what your current user is, run
+
+```shell
+$id
+```
+
+#### UID
+
+The root user always has the UID 0
+
+```shell
+# -u: return UID only
+$id -u root
+```
+
+To see the rules of UID, run
+
+```shell
+$cat /etc/login.defs
+```
+
+You will get:
+
+```
+#
+# Min/max values for automatic uid selection in useradd
+#
+UID_MIN                  1000
+UID_MAX                 60000
+# System accounts
+SYS_UID_MIN               201
+SYS_UID_MAX               999
+```
+
+Which means new users' UID start from 1000. By the way, 1000 is vagrant user's UID because it is the first account. On the other hands, if your UID is between 201 and 999, you are going with system account.
+
+#### Useful Commands
+
+    -   `useradd`: create a new user (link: [add_local_user.sh])
+    -   `userdel -r`: delete a user and it's directory from the home directory
+    -   `id YOUR_USER_NAME`: to see the details of a user
+
+-   Notice, when you run `userdel`, you will find the user directory still in home directory. That's why you will need `-r` to remove the user directory.
+
+```shell
+$ls -l /home
 ```
 
 ### Useful Tricks

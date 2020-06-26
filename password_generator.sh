@@ -26,8 +26,8 @@ USE_SPECIAL_CHARACTERS='false'
 ## Define special characters
 SPECIAL_CHARACTERS="!@#$%^&*()_-+="
 
-## Input options (vl:s means the options must be followed with an argument)
-while getopts vl:s OPTION
+## Input options (l:vs means the option (l) must be followed with an argument whereas options(vs) after : are not)
+while getopts l:vs OPTION
 do
     case ${OPTION} in
         h)
