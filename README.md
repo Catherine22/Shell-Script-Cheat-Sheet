@@ -38,6 +38,7 @@
         -   [Who am I?](#who-am-i)
         -   [Root](#root)
         -   [Useful Commands](#useful-commands)
+    -   [Tar](#tar)
     -   [Useful Tricks](#useful-tricks)
         -   [Search for keywords](#search-for-keywords)
         -   [Search for a file](#search-for-a-file)
@@ -1631,6 +1632,88 @@ Which means new users' UID start from 1000. By the way, 1000 is vagrant user's U
 
 ```shell
 $ls -l /home
+```
+
+### Tar
+
+1. Create a directory including some junk files (videos/a.mp4, b.mp4 c.mp4 d.mp4)
+2. Create an archive for this directory
+
+```shell
+# -cf: create file
+$tar -cf myvideos.tar videos/
+```
+
+3. To list all the files archived in the tar file, run
+
+```shell
+# -tf: list files
+$tar -tf myvideos.tar
+```
+
+4. You could create an archive verbosely as well
+
+```shell
+# -v: verbose (v should be in the middle of the arguments)
+$tar -cvf myvideos.tar videos
+```
+
+5. Create a restore directory and cd into it
+
+```shell
+$mkdir restore && cd $_
+```
+
+6. Extract the myvideo.tar into /restore
+
+```shell
+# -xf: extract file
+$ tar -xf ../myvideos.tar
+```
+
+7. Again, you could extract tar files verbosely
+
+```shell
+# -v: verbose (v should be in the middle of the arguments)
+$tar -xvf ../myvideos.tar
+```
+
+8. Compress an archive using `gzip` and you will get an `.tar.gz` file
+
+```shell
+$gzip myviodes.tar
+```
+
+Or with `tar` only
+
+```shell
+# -z: gzip
+$tar -zcvf myvideos.tar.gz videos/
+```
+
+9. Check the compressed file
+
+```shell
+$tar -ztvf myvideos.tar.gz
+```
+
+10. Another file extension is `.tgz`, `.tar.gz` and `.tgz` are really the same thing.
+
+```shell
+$tar -zcvf myvideos.tgz videos/
+```
+
+10. Decompress the file by using `gunzip`
+
+```shell
+$gunzip myvideos.tar.gz
+```
+
+Or with `tar` only
+
+```shell
+$cd restore/
+$tar -zxvf ../myvideos.tar.gz
 ```
 
 ### Useful Tricks
