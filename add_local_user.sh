@@ -2,7 +2,7 @@
 ## Check if I am root
 if [[ "${UID}" -ne 0 ]]
 then
-  echo 'You are not root'
+  echo 'You are not root' >&2
   exit 1
 fi
 
@@ -18,7 +18,7 @@ useradd -c "${FULLNAME}" -m ${USERNAME}
 ## Check to see if the useradd command succeeded
 if [[ "${?}" -ne 0 ]]
 then
-  echo "The useradd command did not work successfully."
+  echo "The useradd command did not work successfully." >&2
   exit 2
 fi
 
@@ -28,7 +28,7 @@ echo ${PASSWORD} | passwd --stdin ${USERNAME}
 ## Check to see if the passwd command succeeded
 if [[ "${?}" -ne 0 ]]
 then
-  echo "The passwd command did not work successfully."
+  echo "The passwd command did not work successfully." >&2
   exit 3
 fi
 

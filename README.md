@@ -46,6 +46,7 @@
     -   [Use Cases](#use-cases)
         -   [Check if I am root](#check-if-i-am-root)
         -   [Create a new user](#create-a-new-user)
+        -   [Disable Accounts](#disable-accounts)
         -   [Password Generator](#password-generator)
         -   [Create local users with random passwords](#create-local-users-with-random-passwords)
         -   [Create local users with random passwords and keep STDOUT and STDERR to a log file](#create-local-users-with-random-passwords-and-keep-stdout-and-stderr-to-a-log-file)
@@ -1592,6 +1593,12 @@ To see what your current user is, run
 $id
 ```
 
+To check out a specific user, run
+
+```shell
+$id USERNAME
+```
+
 #### UID
 
 The root user always has the UID 0
@@ -1624,11 +1631,14 @@ Which means new users' UID start from 1000. By the way, 1000 is vagrant user's U
 
 #### Useful Commands
 
-    -   `useradd`: create a new user (link: [add_local_user.sh])
-    -   `userdel -r`: delete a user and it's directory from the home directory
-    -   `id YOUR_USER_NAME`: to see the details of a user
+-   `useradd`: create a new user (link: [add_local_user.sh])
+-   `userdel -r`: delete a user and it's directory from the home directory
+-   `id YOUR_USER_NAME`: to see the details of a user
+-   `chage`: To expire an account. E.g. Run `$sudo chage -E 1 Adam` at first, then run `$su - Adam`, you will get error messages `Your account has expired; please contact your system administrator`
+-   `$sudo passwd -l Adam`: Lock password for user Adam. Then run `$su - Adam`, you will get message `su: Authentication failure`
+-   `$sudo passwd -u Adam`: You can also unlock the password for user Adma.
 
--   Notice, when you run `userdel`, you will find the user directory still in home directory. That's why you will need `-r` to remove the user directory.
+*   Notice, when you run `userdel`, you will find the user directory still in home directory. That's why you will need `-r` to remove the user directory.
 
 ```shell
 $ls -l /home
@@ -1641,7 +1651,7 @@ $ls -l /home
 
 ```shell
 # -cf: create file
-$tar -cf myvideos.tar videos/
+$tar -cf myvideos.tar videos
 ```
 
 3. To list all the files archived in the tar file, run
@@ -1688,7 +1698,7 @@ Or with `tar` only
 
 ```shell
 # -z: gzip
-$tar -zcvf myvideos.tar.gz videos/
+$tar -zcvf myvideos.tar.gz videos
 ```
 
 9. Check the compressed file
@@ -1825,6 +1835,10 @@ $exit
 ```
 
 The script to create a user: [add_local_user.sh]
+
+#### Disable Accounts
+
+Lock down an account without actually deleting it.
 
 ### Password Generator
 

@@ -2,7 +2,7 @@
 # Check if I am root
 if [[ "${UID}" -ne 0 ]]
 then
-  echo 'You are not root'
+  echo 'You are not root' >&2
   exit 1
 fi
 
@@ -10,7 +10,7 @@ fi
 NUMBERS_OF_USERS="${#}"
 if [[ "${NUMBERS_OF_USERS}" -lt 1 ]]
 then
-  echo 'Please input username(s)'
+  echo 'Please input username(s)' >&2
   exit 2
 fi
 
@@ -22,7 +22,7 @@ do
   ## Check to see if the useradd command succeeded
   if [[ "${?}" -ne 0 ]]
   then
-    echo "The useradd command did not work successfully."
+    echo "The useradd command did not work successfully." >&2
     exit 3
   fi
 done
@@ -42,7 +42,7 @@ do
   ## Check to see if the passwd command succeeded
   if [[ "${?}" -ne 0 ]]
   then
-    echo "The passwd command did not work successfully."
+    echo "The passwd command did not work successfully." >&2
     exit 4
   fi
 
